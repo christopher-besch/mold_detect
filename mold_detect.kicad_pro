@@ -55,7 +55,11 @@
           "width": 0.0
         }
       ],
-      "drc_exclusions": [],
+      "drc_exclusions": [
+        "lib_footprint_mismatch|109850000|132295000|9579a1fe-880a-4135-ba7b-f5cb48a642f0|00000000-0000-0000-0000-000000000000",
+        "lib_footprint_mismatch|90550000|143600000|2c7a2757-77c5-4d35-9564-f9a705f36c99|00000000-0000-0000-0000-000000000000",
+        "lib_footprint_mismatch|99009057|133824118|0c0a8875-6b26-4e75-bcad-a60be6eef701|00000000-0000-0000-0000-000000000000"
+      ],
       "meta": {
         "version": 2
       },
@@ -111,7 +115,7 @@
       },
       "rules": {
         "max_error": 0.005,
-        "min_clearance": 0.22,
+        "min_clearance": 0.3,
         "min_connection": 0.3,
         "min_copper_edge_clearance": 0.19999999999999998,
         "min_hole_clearance": 0.25,
