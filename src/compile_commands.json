@@ -1,0 +1,19 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/avr-gcc",
+      "-c",
+      "-Wall",
+      "-g",
+      "-Og",
+      "-DF_CPU=1048576",
+      "-mmcu=atmega328p",
+      "-o",
+      "main.elf",
+      "main.c"
+    ],
+    "directory": "/home/chris/mold_detect/src",
+    "file": "/home/chris/mold_detect/src/main.c",
+    "output": "/home/chris/mold_detect/src/main.elf"
+  }
+]
