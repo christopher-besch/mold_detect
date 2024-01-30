@@ -8,6 +8,8 @@ _autosave*
 *.lck
 
 # c files
+.cache
+
 # Prerequisites
 *.d
 
