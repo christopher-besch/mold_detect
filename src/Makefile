@@ -1,9 +1,11 @@
 DEVICE     = atmega328p
-CLOCK      = 1048576
+CLOCK      = 2000000
+BAUD       = 9600
 PROGRAMMER = -c stk500v1 -P /dev/ttyACM0
-FUSES      = -U hfuse:w:0xd9:m -U lfuse:w:0x62:m
-AVRDUDE = avrdude $(PROGRAMMER) -p $(DEVICE)
-COMPILE = bear -- avr-gcc -Wall -g -Og -DF_CPU=$(CLOCK) -mmcu=$(DEVICE)
+# FUSES      = -U hfuse:w:0xd9:m -U lfuse:w:0x62:m
+FUSES      = -U hfuse:w:0xd9:m -U lfuse:w:0x6f:m
+AVRDUDE    = avrdude $(PROGRAMMER) -p $(DEVICE)
+COMPILE    = bear -- avr-gcc -Wall -g -Og -DF_CPU=$(CLOCK) -DBAUD=$(BAUD) -mmcu=$(DEVICE)
 
 all: main.hex
 
