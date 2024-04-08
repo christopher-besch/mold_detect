@@ -8,3 +8,5 @@
 - [FT230XS](https://www.digikey.de/en/products/detail/ftdi-future-technology-devices-international-ltd/FT230XS-R/3029141)
 - [USB4105](https://www.digikey.de/en/products/detail/gct/USB4105-GF-A/11198441)
 
+# Reference
+- 
