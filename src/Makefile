@@ -4,7 +4,7 @@ BAUD       = 9600
 # using dw-link
 PROGRAMMER = -c stk500v1 -P /dev/ttyACM0
 
-OBJECTS = uart.o spi.o flash.o main.o
+OBJECTS = uart.o spi.o flash.o i2c.o main.o
 
 # reset enabled
 # debug wire disabled (DON'T PROGRAM THE DWEN MANUALLY! avr-gdb does that for you)
@@ -43,6 +43,7 @@ $(OBJECTS): %.o: %.c
 main.hex: main.elf
 	rm -f main.hex
 	avr-objcopy -j .text -j .data -O ihex main.elf main.hex
+	avr-size --format=avr --mcu=DEVICE main.elf
 
 clean:
 	rm -f *.o main.hex main.elf

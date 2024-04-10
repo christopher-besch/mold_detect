@@ -1,8 +1,10 @@
 #include <avr/io.h>
+#include <stdlib.h>
 #include <string.h>
 #include <util/delay.h>
 
 #include "flash.h"
+#include "ic2.h"
 #include "uart.h"
 
 void set_led(uint8_t state)
@@ -46,6 +48,27 @@ int main(void)
         flash_read_data(0x69, buf, len);
         uart_println(buf);
         set_led(0);
-        _delay_ms(500);
+
+        TempHum temp_hum;
+        if(i2c_measure_temp_hum(&temp_hum))
+            uart_println("Measurement failed!");
+        char temp[6];
+        char hum[6];
+        itoa(temp_hum.temperature, temp, 10);
+        itoa(temp_hum.humidity, hum, 10);
+        uart_print("Temperature: ");
+        uart_println(temp);
+        uart_print("Humidity: ");
+        uart_println(hum);
+        uart_println("");
+        uart_println("");
+        uart_println("");
+
+        _delay_ms(5000);
+
+        // 0x8   START
+        // 0x18  SLA+W has been transmitted; ACK has been received
+        // 0x28  Data byte has been transmitted; ACK has been received
+        // 0x28  Data byte has been transmitted; ACK has been received
     }
 }
