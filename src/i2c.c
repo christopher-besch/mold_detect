@@ -32,10 +32,10 @@ void await_transmission_conclusion()
 }
 int check_status(uint8_t expected_status)
 {
-    char buf[3];
-    itoa(TWSR & STATUS_MASK, buf, 16);
-    uart_print("0x");
-    uart_println(buf);
+    // char buf[3];
+    // itoa(TWSR & STATUS_MASK, buf, 16);
+    // uart_print("0x");
+    // uart_println(buf);
     return (TWSR & STATUS_MASK) == expected_status;
 }
 
@@ -105,7 +105,6 @@ int i2c_measure_temp_hum(TempHum* temp_hum)
     if(i2c_stop())
         return -1;
     _delay_ms(SCL_FREE);
-    uart_println("after delay");
 
     // receive results //
     if(i2c_start())
