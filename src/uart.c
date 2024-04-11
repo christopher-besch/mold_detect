@@ -6,9 +6,9 @@
 
 void uart_init()
 {
-#define FOSC   2000000 // Clock Speed
+    // do a make clean then make all to use an updated F_CPU value
 #define BAUD   9600
-#define MYUBRR (FOSC / 16 / BAUD - 1)
+#define MYUBRR (F_CPU / 16 / BAUD - 1)
     UBRR0H = (unsigned char)(MYUBRR >> 8);
     UBRR0L = (unsigned char)MYUBRR;
 
