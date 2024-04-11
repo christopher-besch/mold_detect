@@ -7,7 +7,7 @@
 	(title_block
 		(title "Atmospheric Sensor for Mold Prevention")
 		(date "2024-01-08")
-		(rev "1.0.0")
+		(rev "2.0.0")
 		(company "Christopher Besch <mail@chris-besch.com>")
 		(comment 1 "github.com/christopher-besch/mold_detect")
 	)
@@ -4471,6 +4471,12 @@
 		(uuid "afd8437f-4fb1-450e-9ecd-7b7d924a7fed")
 	)
 	(junction
+		(at 43.18 24.13)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "b2a6c741-7ed6-46f7-9126-940301d1fc30")
+	)
+	(junction
 		(at 156.21 71.12)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -4892,6 +4898,16 @@
 	)
 	(wire
 		(pts
+			(xy 218.44 95.25) (xy 219.71 95.25)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "37963fab-8695-40b3-a2f3-4061f698391a")
+	)
+	(wire
+		(pts
 			(xy 27.94 135.89) (xy 27.94 146.05)
 		)
 		(stroke
@@ -5132,6 +5148,16 @@
 	)
 	(wire
 		(pts
+			(xy 43.18 24.13) (xy 62.23 24.13)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "55acfdad-b9f8-4239-8c21-c9af19eb37ec")
+	)
+	(wire
+		(pts
 			(xy 134.62 35.56) (xy 134.62 43.18)
 		)
 		(stroke
@@ -5332,16 +5358,6 @@
 	)
 	(wire
 		(pts
-			(xy 218.44 95.25) (xy 219.71 95.25)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7ca3a494-9941-4c04-84a4-51a52035dfb4")
-	)
-	(wire
-		(pts
 			(xy 43.18 146.05) (xy 50.8 146.05)
 		)
 		(stroke
@@ -5349,6 +5365,16 @@
 			(type default)
 		)
 		(uuid "83578059-fa69-4a9d-98b5-37f340b00b4a")
+	)
+	(wire
+		(pts
+			(xy 218.44 97.79) (xy 219.71 97.79)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "83a71e02-d9f1-4f23-8ebd-dc88f6436c2d")
 	)
 	(wire
 		(pts
@@ -5409,16 +5435,6 @@
 			(type default)
 		)
 		(uuid "97177216-3223-47f5-ba67-18846c7f4da4")
-	)
-	(wire
-		(pts
-			(xy 218.44 87.63) (xy 219.71 87.63)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9a721517-dffc-4ba7-a8d8-da6cbfe06863")
 	)
 	(wire
 		(pts
@@ -5572,6 +5588,16 @@
 	)
 	(wire
 		(pts
+			(xy 218.44 87.63) (xy 219.71 87.63)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b2156f0f-1671-4d28-8208-b369ea951f1b")
+	)
+	(wire
+		(pts
 			(xy 227.33 54.61) (xy 227.33 52.07)
 		)
 		(stroke
@@ -5649,16 +5675,6 @@
 			(type default)
 		)
 		(uuid "c3eeb47d-575c-4a8a-8b86-84d5be8863a7")
-	)
-	(wire
-		(pts
-			(xy 218.44 97.79) (xy 219.71 97.79)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c4269de6-ccd0-42dc-bd54-1f1dc50770cc")
 	)
 	(wire
 		(pts
@@ -5772,6 +5788,16 @@
 	)
 	(wire
 		(pts
+			(xy 43.18 24.13) (xy 43.18 26.67)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d14548db-855e-469b-b353-61e0627f3a9c")
+	)
+	(wire
+		(pts
 			(xy 92.71 73.66) (xy 92.71 74.93)
 		)
 		(stroke
@@ -5809,6 +5835,16 @@
 			(type default)
 		)
 		(uuid "d6c6fabb-9ff9-4357-acdf-1cedb52927cd")
+	)
+	(wire
+		(pts
+			(xy 43.18 22.86) (xy 43.18 24.13)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d78bdab8-2a96-4be9-a5cf-a2273558ed1a")
 	)
 	(wire
 		(pts
@@ -6670,7 +6706,7 @@
 	)
 	(global_label "GENERAL_LED"
 		(shape input)
-		(at 219.71 87.63 0)
+		(at 219.71 95.25 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -6680,7 +6716,7 @@
 		)
 		(uuid "77e754ac-d7c2-4f74-862f-f7357971c95f")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 235.3951 87.63 0)
+			(at 235.3951 95.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6956,7 +6992,7 @@
 	)
 	(global_label "HUM_LED"
 		(shape input)
-		(at 219.71 95.25 0)
+		(at 219.71 97.79 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -6966,7 +7002,7 @@
 		)
 		(uuid "cbb6f9ee-d372-446c-bb2c-7031b5bfd948")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 231.2223 95.25 0)
+			(at 231.2223 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7000,7 +7036,7 @@
 	)
 	(global_label "TEMP_LED"
 		(shape input)
-		(at 219.71 97.79 0)
+		(at 219.71 87.63 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -7010,7 +7046,7 @@
 		)
 		(uuid "d9a24e05-b668-4417-ba0f-10b50849e096")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 231.9479 97.79 0)
+			(at 231.9479 87.63 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7096,7 +7132,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "05538367-2aff-43aa-9fe7-b8a43f111b45")
-		(property "Reference" "R8"
+		(property "Reference" "R9"
 			(at 247.65 67.31 0)
 			(effects
 				(font
@@ -7150,7 +7186,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "R8")
+					(reference "R9")
 					(unit 1)
 				)
 			)
@@ -7166,7 +7202,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "06b84fe8-cb8a-46c2-9d95-9ce791f00e50")
-		(property "Reference" "#PWR023"
+		(property "Reference" "#PWR024"
 			(at 35.56 152.4 0)
 			(effects
 				(font
@@ -7217,7 +7253,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "#PWR023")
+					(reference "#PWR024")
 					(unit 1)
 				)
 			)
@@ -7233,7 +7269,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "0a7f7258-57a8-43aa-8ea4-2f8351469cbd")
-		(property "Reference" "#FLG01"
+		(property "Reference" "#FLG02"
 			(at 93.345 139.7 0)
 			(effects
 				(font
@@ -7284,7 +7320,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "#FLG01")
+					(reference "#FLG02")
 					(unit 1)
 				)
 			)
@@ -7516,7 +7552,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "1df0f07b-6233-4847-8e47-c6cbb8416c9e")
-		(property "Reference" "#PWR09"
+		(property "Reference" "#PWR010"
 			(at 251.46 58.42 0)
 			(effects
 				(font
@@ -7567,7 +7603,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "#PWR09")
+					(reference "#PWR010")
 					(unit 1)
 				)
 			)
@@ -7582,7 +7618,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "2251b407-747e-433b-b283-7bc284329006")
-		(property "Reference" "C11"
+		(property "Reference" "C12"
 			(at 172.72 137.16 0)
 			(effects
 				(font
@@ -7636,7 +7672,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "C11")
+					(reference "C12")
 					(unit 1)
 				)
 			)
@@ -7652,7 +7688,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "24a8caf4-9f3b-4d4c-b141-bcf884426d79")
-		(property "Reference" "#PWR010"
+		(property "Reference" "#PWR012"
 			(at 222.25 76.2 0)
 			(effects
 				(font
@@ -7703,7 +7739,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "#PWR010")
+					(reference "#PWR012")
 					(unit 1)
 				)
 			)
@@ -7719,7 +7755,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "2fdf1b93-a7fe-4c5b-9f99-ac5612bd8e24")
-		(property "Reference" "#PWR013"
+		(property "Reference" "#PWR014"
 			(at 134.62 77.47 0)
 			(effects
 				(font
@@ -7770,7 +7806,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "#PWR013")
+					(reference "#PWR014")
 					(unit 1)
 				)
 			)
@@ -7786,7 +7822,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "315b50ba-5336-43d8-9af4-4be48d544718")
-		(property "Reference" "#PWR012"
+		(property "Reference" "#PWR013"
 			(at 115.57 77.47 0)
 			(effects
 				(font
@@ -7837,7 +7873,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "#PWR012")
+					(reference "#PWR013")
 					(unit 1)
 				)
 			)
@@ -7984,7 +8020,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "43085c34-bea4-4867-aa00-30f5535bd18d")
-		(property "Reference" "#PWR016"
+		(property "Reference" "#PWR015"
 			(at 156.21 77.47 0)
 			(effects
 				(font
@@ -8035,7 +8071,74 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "#PWR016")
+					(reference "#PWR015")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 62.23 31.75 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "44694b13-7589-4533-a190-1cdd387d2a84")
+		(property "Reference" "#PWR06"
+			(at 62.23 38.1 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 62.23 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 62.23 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 62.23 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 62.23 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "f6e8de42-7ea9-42f9-89ac-44ee75386254")
+		)
+		(instances
+			(project "mold_detect"
+				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
+					(reference "#PWR06")
 					(unit 1)
 				)
 			)
@@ -8050,7 +8153,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "4cbf0b53-a58b-419b-b59f-c68b01c7fc2e")
-		(property "Reference" "R10"
+		(property "Reference" "R11"
 			(at 39.37 140.97 90)
 			(effects
 				(font
@@ -8102,7 +8205,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "R10")
+					(reference "R11")
 					(unit 1)
 				)
 			)
@@ -8272,7 +8375,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "530ce90f-0718-4b71-b733-7c83bb353fff")
-		(property "Reference" "C7"
+		(property "Reference" "C8"
 			(at 106.68 66.04 0)
 			(effects
 				(font
@@ -8326,7 +8429,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "C7")
+					(reference "C8")
 					(unit 1)
 				)
 			)
@@ -8341,7 +8444,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "53252655-9299-4e5b-bdd2-c16ff73370e5")
-		(property "Reference" "C4"
+		(property "Reference" "C5"
 			(at 234.95 29.21 0)
 			(effects
 				(font
@@ -8395,7 +8498,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "C4")
+					(reference "C5")
 					(unit 1)
 				)
 			)
@@ -8551,7 +8654,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "598caff3-a8eb-423f-af99-f70becaddc0b")
-		(property "Reference" "#PWR08"
+		(property "Reference" "#PWR09"
 			(at 52.07 55.88 0)
 			(effects
 				(font
@@ -8602,7 +8705,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "#PWR08")
+					(reference "#PWR09")
 					(unit 1)
 				)
 			)
@@ -8618,7 +8721,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "5a4f0b06-847a-4503-a4dd-108aea12b7fb")
-		(property "Reference" "#PWR017"
+		(property "Reference" "#PWR018"
 			(at 20.32 87.63 0)
 			(effects
 				(font
@@ -8669,7 +8772,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "#PWR017")
+					(reference "#PWR018")
 					(unit 1)
 				)
 			)
@@ -8749,7 +8852,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "5fba04e1-bf6d-42db-831f-0816ba8d4b19")
-		(property "Reference" "Red3"
+		(property "Reference" "Red2"
 			(at 54.61 130.81 90)
 			(effects
 				(font
@@ -8801,7 +8904,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "Red3")
+					(reference "Red2")
 					(unit 1)
 				)
 			)
@@ -8817,7 +8920,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "612ec930-2ca4-4548-96e8-7b2c0cdfc892")
-		(property "Reference" "#FLG02"
+		(property "Reference" "#FLG03"
 			(at 97.155 162.56 0)
 			(effects
 				(font
@@ -8868,7 +8971,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "#FLG02")
+					(reference "#FLG03")
 					(unit 1)
 				)
 			)
@@ -8883,7 +8986,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "637f6b2d-4f92-43e4-9e42-1433ad4ead1c")
-		(property "Reference" "#PWR020"
+		(property "Reference" "#PWR021"
 			(at 144.78 138.43 0)
 			(effects
 				(font
@@ -8933,7 +9036,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "#PWR020")
+					(reference "#PWR021")
 					(unit 1)
 				)
 			)
@@ -8948,7 +9051,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "640d8b5c-dcea-46a4-816b-a7ee03171afa")
-		(property "Reference" "R11"
+		(property "Reference" "R12"
 			(at 46.99 143.51 90)
 			(effects
 				(font
@@ -9000,7 +9103,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "R11")
+					(reference "R12")
 					(unit 1)
 				)
 			)
@@ -9171,7 +9274,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "6df9b05c-a24d-49f9-8851-7182551447c7")
-		(property "Reference" "#PWR014"
+		(property "Reference" "#PWR016"
 			(at 30.48 77.47 0)
 			(effects
 				(font
@@ -9221,7 +9324,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "#PWR014")
+					(reference "#PWR016")
 					(unit 1)
 				)
 			)
@@ -9306,7 +9409,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "70b2200e-e42f-44cf-9d70-33890bd344f9")
-		(property "Reference" "Red2"
+		(property "Reference" "Red1"
 			(at 46.99 130.81 90)
 			(effects
 				(font
@@ -9358,7 +9461,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "Red2")
+					(reference "Red1")
 					(unit 1)
 				)
 			)
@@ -9440,7 +9543,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "7dbf418c-1236-4d18-9740-19b74a83975f")
-		(property "Reference" "#PWR026"
+		(property "Reference" "#PWR027"
 			(at 36.83 171.45 0)
 			(effects
 				(font
@@ -9491,7 +9594,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "#PWR026")
+					(reference "#PWR027")
 					(unit 1)
 				)
 			)
@@ -9748,7 +9851,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "84d8bce7-fb53-45d3-b43a-1555d15ada6e")
-		(property "Reference" "#PWR019"
+		(property "Reference" "#PWR020"
 			(at 203.2 115.57 0)
 			(effects
 				(font
@@ -9799,7 +9902,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "#PWR019")
+					(reference "#PWR020")
 					(unit 1)
 				)
 			)
@@ -9815,7 +9918,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "862d5d38-29a9-4238-b845-9c2c37cea883")
-		(property "Reference" "#PWR024"
+		(property "Reference" "#PWR025"
 			(at 154.94 166.37 0)
 			(effects
 				(font
@@ -9866,7 +9969,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "#PWR024")
+					(reference "#PWR025")
 					(unit 1)
 				)
 			)
@@ -10012,7 +10115,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "8e3a81ca-5526-4290-9a1c-a62c3f5d41f9")
-		(property "Reference" "C9"
+		(property "Reference" "C10"
 			(at 132.08 66.04 0)
 			(effects
 				(font
@@ -10066,7 +10169,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "C9")
+					(reference "C10")
 					(unit 1)
 				)
 			)
@@ -10082,7 +10185,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "8fcd4cfc-a484-42dd-86a1-34778832239b")
-		(property "Reference" "#PWR025"
+		(property "Reference" "#PWR026"
 			(at 95.25 170.18 0)
 			(effects
 				(font
@@ -10133,7 +10236,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "#PWR025")
+					(reference "#PWR026")
 					(unit 1)
 				)
 			)
@@ -10148,7 +10251,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "96cd399d-b3f0-436b-9b4e-7369f47d50c4")
-		(property "Reference" "C10"
+		(property "Reference" "C11"
 			(at 25.4 76.2 0)
 			(effects
 				(font
@@ -10202,7 +10305,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "C10")
+					(reference "C11")
 					(unit 1)
 				)
 			)
@@ -10217,7 +10320,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "98d2c24c-d217-43bd-8a8a-1c28d9095e41")
-		(property "Reference" "C8"
+		(property "Reference" "C9"
 			(at 120.65 66.04 0)
 			(effects
 				(font
@@ -10271,7 +10374,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "C8")
+					(reference "C9")
 					(unit 1)
 				)
 			)
@@ -10425,7 +10528,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a7b8b801-bbee-41ef-b27c-df4c61b1f370")
-		(property "Reference" "R6"
+		(property "Reference" "R7"
 			(at 231.14 67.31 0)
 			(effects
 				(font
@@ -10479,7 +10582,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "R6")
+					(reference "R7")
 					(unit 1)
 				)
 			)
@@ -10495,7 +10598,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "abe2b089-868d-4857-b8c0-db0e6b1cc635")
-		(property "Reference" "#PWR06"
+		(property "Reference" "#PWR07"
 			(at 228.6 40.64 0)
 			(effects
 				(font
@@ -10546,7 +10649,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "#PWR06")
+					(reference "#PWR07")
 					(unit 1)
 				)
 			)
@@ -10643,7 +10746,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "adcde7bb-01f8-41b1-bcfb-77bcf2f5494b")
-		(property "Reference" "R9"
+		(property "Reference" "R10"
 			(at 31.75 138.43 90)
 			(effects
 				(font
@@ -10695,7 +10798,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "R9")
+					(reference "R10")
 					(unit 1)
 				)
 			)
@@ -10711,7 +10814,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "b161b8f6-b8be-4548-ad14-4a7dd3deae09")
-		(property "Reference" "#FLG03"
+		(property "Reference" "#FLG01"
 			(at 134.62 23.495 0)
 			(effects
 				(font
@@ -10761,7 +10864,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "#FLG03")
+					(reference "#FLG01")
 					(unit 1)
 				)
 			)
@@ -10777,7 +10880,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ba19c1f6-bc75-4d47-baa6-0d150b6f1b62")
-		(property "Reference" "#PWR04"
+		(property "Reference" "#PWR05"
 			(at 168.91 35.56 0)
 			(effects
 				(font
@@ -10828,7 +10931,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "#PWR04")
+					(reference "#PWR05")
 					(unit 1)
 				)
 			)
@@ -10844,7 +10947,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ba8cb952-8568-4674-8490-81047f010e2f")
-		(property "Reference" "#PWR015"
+		(property "Reference" "#PWR017"
 			(at 92.71 81.28 0)
 			(effects
 				(font
@@ -10895,7 +10998,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "#PWR015")
+					(reference "#PWR017")
 					(unit 1)
 				)
 			)
@@ -10910,7 +11013,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "bce10c63-6fa3-4a33-ae52-5a3ac610a21a")
-		(property "Reference" "C6"
+		(property "Reference" "C7"
 			(at 243.84 55.88 90)
 			(effects
 				(font
@@ -10964,7 +11067,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "C6")
+					(reference "C7")
 					(unit 1)
 				)
 			)
@@ -11092,7 +11195,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "c015cec5-b132-4623-a40d-50f33669e9c0")
-		(property "Reference" "#PWR021"
+		(property "Reference" "#PWR022"
 			(at 95.25 142.24 0)
 			(effects
 				(font
@@ -11142,7 +11245,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "#PWR021")
+					(reference "#PWR022")
 					(unit 1)
 				)
 			)
@@ -11158,7 +11261,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "c016fdb2-0cde-43f0-8c07-6aa54e5f491a")
-		(property "Reference" "#PWR03"
+		(property "Reference" "#PWR04"
 			(at 115.57 35.56 0)
 			(effects
 				(font
@@ -11209,7 +11312,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "#PWR03")
+					(reference "#PWR04")
 					(unit 1)
 				)
 			)
@@ -11295,7 +11398,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "cc823a56-1ac0-45ab-ab50-e823a16ae505")
-		(property "Reference" "R7"
+		(property "Reference" "R8"
 			(at 238.76 67.31 0)
 			(effects
 				(font
@@ -11349,7 +11452,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "R7")
+					(reference "R8")
 					(unit 1)
 				)
 			)
@@ -11364,7 +11467,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "cca3f17a-9250-4cb3-b0ed-37eecdab5256")
-		(property "Reference" "C5"
+		(property "Reference" "C6"
 			(at 243.84 38.1 90)
 			(effects
 				(font
@@ -11418,7 +11521,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "C5")
+					(reference "C6")
 					(unit 1)
 				)
 			)
@@ -11503,7 +11606,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "cef60ff4-f430-4d73-a6b2-54bbdacd3830")
-		(property "Reference" "#PWR018"
+		(property "Reference" "#PWR019"
 			(at 20.32 102.87 0)
 			(effects
 				(font
@@ -11554,7 +11657,76 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "#PWR018")
+					(reference "#PWR019")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 62.23 27.94 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "d1898894-3a00-4dc8-a317-5f1c0c73a1b2")
+		(property "Reference" "C4"
+			(at 68.58 26.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100n"
+			(at 68.58 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder"
+			(at 61.2648 24.13 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 62.23 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 62.23 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "f828b477-5858-42b9-b7e6-f5eaf28a674c")
+		)
+		(pin "2"
+			(uuid "2f07749f-38d8-4779-a90a-de914f244f40")
+		)
+		(instances
+			(project "mold_detect"
+				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
+					(reference "C4")
 					(unit 1)
 				)
 			)
@@ -11570,7 +11742,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "d6f9744a-0117-4b94-8227-d55415e3edd8")
-		(property "Reference" "#PWR027"
+		(property "Reference" "#PWR028"
 			(at 46.99 176.53 0)
 			(effects
 				(font
@@ -11621,7 +11793,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "#PWR027")
+					(reference "#PWR028")
 					(unit 1)
 				)
 			)
@@ -11700,7 +11872,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "d962ec0a-4f85-4625-bb2b-2e38d78b24ac")
-		(property "Reference" "R12"
+		(property "Reference" "R13"
 			(at 54.61 146.05 90)
 			(effects
 				(font
@@ -11752,7 +11924,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "R12")
+					(reference "R13")
 					(unit 1)
 				)
 			)
@@ -11760,7 +11932,7 @@
 	)
 	(symbol
 		(lib_id "power:+3V0")
-		(at 43.18 26.67 0)
+		(at 43.18 22.86 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -11768,7 +11940,7 @@
 		(dnp no)
 		(uuid "d965d9aa-4a12-4314-b314-b021db1f86f2")
 		(property "Reference" "#PWR01"
-			(at 43.18 30.48 0)
+			(at 43.18 26.67 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11777,7 +11949,7 @@
 			)
 		)
 		(property "Value" "+3V0"
-			(at 43.18 21.59 0)
+			(at 39.37 21.59 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11785,7 +11957,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 43.18 26.67 0)
+			(at 43.18 22.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11794,7 +11966,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 43.18 26.67 0)
+			(at 43.18 22.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11803,7 +11975,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+3V0\""
-			(at 43.18 26.67 0)
+			(at 43.18 22.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11902,7 +12074,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "e92b8f0c-296e-492b-85f1-089198c36fa2")
-		(property "Reference" "#PWR07"
+		(property "Reference" "#PWR08"
 			(at 119.38 50.8 0)
 			(effects
 				(font
@@ -11953,7 +12125,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "#PWR07")
+					(reference "#PWR08")
 					(unit 1)
 				)
 			)
@@ -11969,7 +12141,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "edb4e839-530a-42b5-aa7b-bb6f12e0a5aa")
-		(property "Reference" "#PWR022"
+		(property "Reference" "#PWR023"
 			(at 166.37 148.59 0)
 			(effects
 				(font
@@ -12020,7 +12192,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "#PWR022")
+					(reference "#PWR023")
 					(unit 1)
 				)
 			)
@@ -12171,7 +12343,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "f65e7b33-8ed2-4ac9-95de-8e36e88ab7f5")
-		(property "Reference" "#PWR05"
+		(property "Reference" "#PWR03"
 			(at 142.24 31.75 0)
 			(effects
 				(font
@@ -12221,7 +12393,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "#PWR05")
+					(reference "#PWR03")
 					(unit 1)
 				)
 			)
@@ -12236,7 +12408,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "fc10d1c1-7a06-418a-a6ef-e8d187016c48")
-		(property "Reference" "R13"
+		(property "Reference" "R6"
 			(at 222.25 64.77 0)
 			(effects
 				(font
@@ -12290,7 +12462,7 @@
 		(instances
 			(project "mold_detect"
 				(path "/be351f32-1dd4-4cf0-ba94-4ba43c4e34b8"
-					(reference "R13")
+					(reference "R6")
 					(unit 1)
 				)
 			)
