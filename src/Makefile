@@ -3,6 +3,8 @@ CLOCK      = 2000000
 BAUD       = 9600
 # using dw-link
 PROGRAMMER = -c stk500v1 -P /dev/ttyACM0
+# using avrispmkII
+# PROGRAMMER = -c avrispmkII -P usb
 
 OBJECTS = uart.o spi.o flash.o i2c.o main.o
 
@@ -22,6 +24,8 @@ OBJECTS = uart.o spi.o flash.o i2c.o main.o
 FUSES      = -U hfuse:w:0xd9:m -U lfuse:w:0x6f:m
 AVRDUDE    = avrdude $(PROGRAMMER) -p $(DEVICE)
 COMPILE    = avr-gcc -Wall -g -Og -DF_CPU=$(CLOCK) -DBAUD=$(BAUD) -mmcu=$(DEVICE)
+
+.PHONY: all install flash fuse clean
 
 all: main.hex
 
@@ -47,4 +51,3 @@ main.hex: main.elf
 
 clean:
 	rm -f *.o main.hex main.elf
-
