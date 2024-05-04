@@ -86,7 +86,22 @@ ISR(PCINT2_vect)
     // is PD3 high; so wake-up has been sent
     // ignore PD3 falling edge
     if(PIND & 1 << PIN3) {
-        char    data[] = "How are you doing, my little flashy flash chip? You're really flashy, you know that. And you're doing a great job, keep up the good work!";
+        uart_print("mold_detect (github.com/christopher-besch/mold_detect)\r\nversion: ");
+        uart_println(MOLD_DETECT_VERSION);
+        uart_println("Developed by Christopher Besch\r\nat the Chair for Embedded System at the KIT");
+
+        char size_buf[6];
+        utoa(sizeof(GenericFlashBlock), size_buf, 10);
+        uart_print("sizeof(GenericFlashBlock): ");
+        uart_println(size_buf);
+        utoa(sizeof(FlashSensorData), size_buf, 10);
+        uart_print("sizeof(FlashSensorData): ");
+        uart_println(size_buf);
+        utoa(sizeof(FlashTimestamp), size_buf, 10);
+        uart_print("sizeof(FlashTimestamp): ");
+        uart_println(size_buf);
+
+        char    data[] = "This is pretty cool, is it not?";
         uint8_t len    = strlen(data) + 1;
         // if(flash_sector_erase(0x0)) {
         //     uart_println("failed to erase");
@@ -97,8 +112,10 @@ ISR(PCINT2_vect)
 
         set_led(1);
         char buf[len];
-        flash_read_data(0x69, buf, len);
-        uart_println(buf);
+        if(flash_read_data(0x69, buf, len))
+            uart_println("Flash read failed!");
+        else
+            uart_println(buf);
 
         TempHum temp_hum;
         if(i2c_measure_temp_hum(&temp_hum))

@@ -1,6 +1,7 @@
-DEVICE     = atmega328p
-CLOCK      = 2000000
-BAUD       = 9600
+DEVICE                 = atmega328p
+CLOCK                  = 2000000
+BAUD                   = 9600
+MOLD_DETECT_VERSION    = \"0.1.0\"
 # using dw-link
 PROGRAMMER = -c stk500v1 -P /dev/ttyACM0
 # using avrispmkII
@@ -23,7 +24,7 @@ OBJECTS = uart.o spi.o flash.o i2c.o main.o
 # -> 2MHz Clock
 FUSES      = -U hfuse:w:0xd9:m -U lfuse:w:0x6f:m
 AVRDUDE    = avrdude $(PROGRAMMER) -p $(DEVICE)
-COMPILE    = avr-gcc -Wall -g -Og -DF_CPU=$(CLOCK) -DBAUD=$(BAUD) -mmcu=$(DEVICE)
+COMPILE    = avr-gcc -Wall -g -Og -DF_CPU=$(CLOCK) -DBAUD=$(BAUD) -DMOLD_DETECT_VERSION=$(MOLD_DETECT_VERSION) -mmcu=$(DEVICE)
 
 .PHONY: all install flash fuse clean
 
@@ -37,7 +38,6 @@ flash: all
 fuse:
 	$(AVRDUDE) $(FUSES)
 
-# TODO: do extra step with object files
 main.elf: $(OBJECTS)
 	$(COMPILE) -o main.elf $(OBJECTS)
 
