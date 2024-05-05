@@ -17,8 +17,12 @@ const char* get_error_msg(MoldError* error)
         return "Writing a block to the flash failed.";
     case MOLD_ERROR_FAILED_TO_RESET_ERROR_COUNTS:
         return "Resetting the error counts failed.";
-    case MOLD_ERROR_NULL_TERMINATE_AFTER_FIRST_WORD:
+    case MOLD_ERROR_INVALID_PARAMS_NULL_TERMINATE_AFTER_FIRST_WORD:
         return "null_terminate_after_first_word was called with NULL.";
+    case MOLD_ERROR_INVALID_PARAMS_PARSE_ERROR_SUBCMD:
+        return "parse_error_subcmd was called with NULL.";
+    case MOLD_ERROR_INVALID_PARAMS_PARSE_CMD:
+        return "parse_cmd was called with NULL.";
     case MOLD_ERROR_TEST:
         return "This a test error.";
     default:

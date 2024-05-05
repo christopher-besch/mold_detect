@@ -1,7 +1,6 @@
 #include "led.h"
 #include "error.h"
 #include "interrupts.h"
-#include "uart.h"
 
 #include <avr/io.h>
 
