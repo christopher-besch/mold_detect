@@ -20,10 +20,10 @@
 #define FLASH_BLOCK_FLAG_TYPE = 0x0f
 
 // values for FLASH_BLOCK_FLAG_TYPE in the flag byte of each block
-enum FlashBlockType {
+typedef enum _flashBlockType {
     SENSOR_DATA = 0x0,
     TIMESTAMP   = 0x1,
-};
+} FlashBlockType;
 
 // size of 8 bytes
 // -> 32 blocks per page

@@ -1,3 +1,4 @@
+#include <avr/eeprom.h>
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include <avr/sleep.h>
@@ -5,28 +6,11 @@
 #include <string.h>
 #include <util/delay.h>
 
+#include "error.h"
 #include "flash.h"
 #include "ic2.h"
+#include "led.h"
 #include "uart.h"
-
-void set_led(uint8_t state)
-{
-    if(state) {
-        // set PD2 to high
-        PORTD |= 1 << PORT2;
-    }
-    else {
-        // set PD2 to low
-        PORTD &= ~(1 << PORT2);
-    }
-}
-
-void led_init()
-{
-    // set DDD2 to output
-    DDRD |= 1 << DD2;
-    set_led(0);
-}
 
 void start_sleep()
 {
@@ -72,9 +56,19 @@ int main(void)
     led_init();
     uart_init();
 
-    set_led(1);
+    set_atmosphere_led(1);
+
+    uart_println("");
+    uart_println("");
+    uart_println("");
+    uart_println("mold_detect booting up");
+    uart_println("");
+    uart_println("");
+    uart_println("");
+    list_errors();
+
     _delay_ms(50);
-    set_led(0);
+    set_atmosphere_led(0);
 
     start_sleep();
 }
@@ -110,7 +104,7 @@ ISR(PCINT2_vect)
         // }
         // uart_println(flash_write_data(0x69, data, len) ? "Write failed" : "Write succeeded");
 
-        set_led(1);
+        set_atmosphere_led(1);
         char buf[len];
         if(flash_read_data(0x69, buf, len))
             uart_println("Flash read failed!");
@@ -131,7 +125,7 @@ ISR(PCINT2_vect)
         uart_println("");
         uart_println("");
         uart_println("");
-        set_led(0);
+        set_atmosphere_led(0);
 
         respond_watch_dog();
     }

@@ -1,4 +1,5 @@
 #include <avr/io.h>
+#include <stdlib.h>
 #include <util/delay.h>
 #include <util/setbaud.h>
 
@@ -43,4 +44,11 @@ void uart_println(const char* str)
 {
     uart_print(str);
     uart_print("\r\n");
+}
+
+void uart_print_uint8_t(uint8_t val)
+{
+    char str[4];
+    utoa(val, str, 10);
+    uart_print(str);
 }

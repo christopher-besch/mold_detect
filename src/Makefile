@@ -7,13 +7,14 @@ PROGRAMMER = -c stk500v1 -P /dev/ttyACM0
 # using avrispmkII
 # PROGRAMMER = -c avrispmkII -P usb
 
-OBJECTS = uart.o spi.o flash.o i2c.o main.o
+OBJECTS = uart.o spi.o flash.o i2c.o error.o led.o main.o
 
+# FUSES #
 # reset enabled
 # debug wire disabled (DON'T PROGRAM THE DWEN MANUALLY! avr-gdb does that for you)
 # SPI programming enabled
 # watchdog timer off
-# reset eeprom
+# don't reset eeprom on programming
 # maximum boot size
 # boot reset vector disabled
 
@@ -22,7 +23,7 @@ OBJECTS = uart.o spi.o flash.o i2c.o main.o
 # use maximum start-up time
 # use external 16MHz Oscillator
 # -> 2MHz Clock
-FUSES      = -U hfuse:w:0xd9:m -U lfuse:w:0x6f:m
+FUSES      = -U hfuse:w:0xd1:m -U lfuse:w:0x6f:m
 AVRDUDE    = avrdude $(PROGRAMMER) -p $(DEVICE)
 COMPILE    = avr-gcc -Wall -g -Og -DF_CPU=$(CLOCK) -DBAUD=$(BAUD) -DMOLD_DETECT_VERSION=$(MOLD_DETECT_VERSION) -mmcu=$(DEVICE)
 
