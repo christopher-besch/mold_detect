@@ -1,3 +1,4 @@
+#include <avr/interrupt.h>
 #include <util/delay.h>
 
 #include "flash.h"
@@ -9,7 +10,7 @@
 int main(void)
 {
     // init
-    // this needs to go first as the avr wdt might still be enabled
+    // this should go first as the avr wdt might still be enabled
     interrupt_init();
     flash_init();
     led_init();
@@ -22,7 +23,9 @@ int main(void)
     _delay_ms(50);
     set_atmosphere_led(0);
 
-    enter_terminal();
-
-    start_measurement_sleep_cycle();
+    sei();
+    if(is_usb_mode())
+        enter_terminal();
+    else
+        start_measurement_sleep_cycle();
 }

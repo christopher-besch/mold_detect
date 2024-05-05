@@ -1,5 +1,7 @@
 #include "led.h"
 #include "error.h"
+#include "interrupts.h"
+#include "uart.h"
 
 #include <avr/io.h>
 
@@ -27,6 +29,8 @@ void led_init()
     set_error_led(in_error_state());
     ATMOSPHERE_LED_DATA_DIRECTION_REGISTER |= 1 << ATMOSPHERE_LED_PIN_NR;
     set_atmosphere_led(0);
+    USB_LED_DATA_DIRECTION_REGISTER |= 1 << USB_LED_PIN_NR;
+    set_usb_led(is_usb_mode());
 }
 
 void set_error_led(uint8_t state)

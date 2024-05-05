@@ -56,6 +56,4 @@ void perform_measurement()
     uart_println("");
     uart_println("");
     set_atmosphere_led(0);
-
-    respond_watch_dog();
 }

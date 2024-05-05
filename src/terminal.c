@@ -63,6 +63,8 @@ void parse_cmd(char* input_line)
 // The only way of leaving is by resetting the device.
 void enter_terminal()
 {
+    // this code is not re-intrant
+    disable_measurements();
     while(1) {
         uart_println("");
         uart_print("(mold_detect)$ ");

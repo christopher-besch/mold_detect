@@ -24,10 +24,17 @@
 
 // this pin is connected to the power output of the uart to usb controller
 // that way it is low when no usb host is connected and high otherwise
-#define USB_ENABLE_DONE_DATA_DIRECTION_REGISTER DDRC
-#define USB_ENABLE_DONE_PORT                    PORTC
-#define USB_ENABLE_DONE_PIN                     PINC
-#define USB_ENABLE_DONE_PIN_NR                  0
+//
+// the 3V3 output of the usb controller is connected to the rest of the system via a diode
+// the usb enable interrupt pin is connected to the usb controller side of the diode
+// additionally the pin is pulled low using a resistor
+// that way the pin gets pulled high when a usb host is attached
+#define USB_ENABLE_DATA_DIRECTION_REGISTER DDRC
+#define USB_ENABLE_PORT                    PORTC
+#define USB_ENABLE_PIN                     PINC
+#define USB_ENABLE_PIN_NR                  0
+
+static uint8_t should_measure = 0;
 
 void interrupt_init()
 {
@@ -44,10 +51,19 @@ void interrupt_init()
     WD_WAKE_DATA_DIRECTION_REGISTER &= ~(1 << WD_WAKE_PIN_NR);
     WD_WAKE_PORT &= ~(1 << WD_WAKE_PIN_NR);
 
+    // set usb enable pin to input and disable pullup
+    USB_ENABLE_DATA_DIRECTION_REGISTER &= ~(1 << USB_ENABLE_PIN_NR);
+    USB_ENABLE_PORT &= ~(1 << USB_ENABLE_PIN_NR);
+
     // enable pin change interrupt 2
     PCICR |= 1 << PCIE2;
     // make wake pin PD3 (PCINT19) contribute to pin change interrupt 2
     PCMSK2 |= 1 << PCINT19;
+
+    // enable pin change interrupt 1
+    PCICR |= 1 << PCIE1;
+    // make wake pin PC0 (PCINT8) contribute to pin change interrupt 1
+    PCMSK1 |= 1 << PCINT8;
 }
 
 void reset()
@@ -63,25 +79,35 @@ void respond_watch_dog()
 {
     // send done signal to timer
     // -> prevents watch dog reset
-    PORTD |= 1 << WD_DONE_PIN_NR;
+    WD_DONE_PORT |= 1 << WD_DONE_PIN_NR;
     _delay_ms(1);
-    PORTD &= ~(1 << WD_DONE_PIN_NR);
+    WD_DONE_PORT &= ~(1 << WD_DONE_PIN_NR);
 }
 
 void start_measurement_sleep_cycle()
 {
+    enable_measurements();
+
     set_sleep_mode(SLEEP_MODE_PWR_DOWN);
-    // sei does the same as
-    // SREG |= 1 << SREG_I;
-    sei();
     sleep_enable();
     while(1) {
         sleep_cpu();
     }
 }
 
-void is_usb_mode()
+uint8_t is_usb_mode()
 {
+    return USB_ENABLE_PIN & (1 << USB_ENABLE_PIN_NR);
+}
+
+void enable_measurements()
+{
+    should_measure = 0;
+}
+
+void disable_measurements()
+{
+    should_measure = 0;
 }
 
 // timer interrupt handler
@@ -90,16 +116,24 @@ ISR(PCINT2_vect)
 {
     // is wake pin high; so wake-up has been sent
     // ignore wake pin falling edge
-    if(WD_WAKE_PIN & 1 << WD_WAKE_PIN_NR) {
-        perform_measurement();
+    if(WD_WAKE_PIN & (1 << WD_WAKE_PIN_NR)) {
+        if(should_measure)
+            perform_measurement();
+        // always respond to the watchdog
+        respond_watch_dog();
     }
 }
 
-// timer interrupt handler
-// use pin change interrupt 2 for PC0 (PCINT8)
+// usb enable interrupt handler
+// use pin change interrupt 1 for PC0 (PCINT8)
 ISR(PCINT1_vect)
 {
-    set_usb_led(1);
-    _delay_ms(50);
-    set_usb_led(0);
+    if(is_usb_mode()) {
+        set_usb_led(1);
+        reset();
+    }
+    else {
+        set_usb_led(0);
+        reset();
+    }
 }
