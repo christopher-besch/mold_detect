@@ -42,8 +42,8 @@ fuse:
 main.elf: $(OBJECTS)
 	$(COMPILE) -o main.elf $(OBJECTS)
 
-$(OBJECTS): %.o: %.c
-	$(COMPILE) -c $@ $<
+$(OBJECTS): %.o: ../%.c
+	$(COMPILE) -c -o $@ $<
 
 main.hex: main.elf
 	rm -f main.hex

@@ -34,3 +34,5 @@ void set_atmosphere_led(uint8_t state)
     else
         ATMOSPHERE_LED_PORT &= ~(1 << ATMOSPHERE_LED_PIN);
 }
+
+// TODO: USB-C mode led
