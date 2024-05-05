@@ -1,9 +1,12 @@
 #include <avr/io.h>
 #include <stdlib.h>
+#include <string.h>
 #include <util/delay.h>
 #include <util/setbaud.h>
 
 #include "uart.h"
+
+static char cmd_buf[MAX_CMD_LENGTH];
 
 void uart_init()
 {
@@ -13,9 +16,6 @@ void uart_init()
     UBRR0H = (unsigned char)(MYUBRR >> 8);
     UBRR0L = (unsigned char)MYUBRR;
 
-    // calculated by <util/setbaud.h>
-    // UBRR0H = UBRRH_VALUE;
-    // UBRR0L = UBRRL_VALUE;
     // enable receiver and transmitter
     // leave UCSZ02 to 0 for 8 data bits
     UCSR0B = (1 << RXEN0) | (1 << TXEN0);
@@ -31,6 +31,15 @@ void uart_trans(unsigned char data)
 
     // send data
     UDR0 = data;
+}
+
+unsigned char uart_rec()
+{
+    // wait for data to be received
+    while(!(UCSR0A & (1 << RXC0)))
+        ;
+    // return received byte
+    return UDR0;
 }
 
 void uart_print(const char* str)
@@ -51,4 +60,22 @@ void uart_print_uint8_t(uint8_t val)
     char str[4];
     utoa(val, str, 10);
     uart_print(str);
+}
+
+char* uart_rec_line()
+{
+    // this also sets the null terminator
+    memset(cmd_buf, 0, MAX_CMD_LENGTH);
+    for(uint8_t i = 0; i < MAX_CMD_LENGTH - 1; ++i) {
+        char c = uart_rec();
+        // exclude \r and \n in the line
+        if(c == '\r')
+            break;
+        if(c == '\n')
+            continue;
+        uart_trans(c);
+        cmd_buf[i] = c;
+    }
+    uart_println("");
+    return cmd_buf;
 }

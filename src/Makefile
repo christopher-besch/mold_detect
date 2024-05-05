@@ -7,7 +7,7 @@ PROGRAMMER = -c stk500v1 -P /dev/ttyACM0
 # using avrispmkII
 # PROGRAMMER = -c avrispmkII -P usb
 
-OBJECTS = uart.o spi.o flash.o i2c.o error.o led.o main.o
+OBJECTS = uart.o spi.o flash.o i2c.o error.o led.o terminal.o interrupts.o measure.o main.o
 
 # FUSES #
 # reset enabled
