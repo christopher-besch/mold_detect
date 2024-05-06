@@ -1,6 +1,7 @@
 #include "terminal.h"
 #include "error.h"
 #include "interrupts.h"
+#include "measure.h"
 #include "uart.h"
 
 #include <string.h>
@@ -36,6 +37,41 @@ void parse_error_subcmd(char* arguments)
     uart_println("Try error help for a list of all commands.");
 }
 
+void parse_flash_subcmd(char* arguments)
+{
+    if(!arguments) {
+        raise_error(MOLD_ERROR_INVALID_PARAMS_PARSE_FLASH_SUBCMD);
+    }
+
+    null_terminate_after_first_word(&arguments);
+    const char* sub_cmd = arguments;
+
+    if(!strcmp(sub_cmd, "erase")) {
+        uart_print("Are you sure you want to erase the entire flash chip? [y/N] ");
+        char resp = uart_rec();
+        uart_println("");
+        if(resp == 'y' || resp == 'Y')
+            uart_println("let's erase");
+        else
+            uart_println("Don't erase.");
+        return;
+    }
+    if(!strcmp(sub_cmd, "usage")) {
+        return;
+    }
+    if(!strcmp(sub_cmd, "print")) {
+        return;
+    }
+    if(!strcmp(sub_cmd, "help")) {
+        uart_println("The possible subcommands are: erase, usage, print, help");
+        return;
+    }
+    uart_print("Unknown flash subcommand: '");
+    uart_print(sub_cmd);
+    uart_println("'");
+    uart_println("Try flash help for a list of all commands.");
+}
+
 void parse_cmd(char* input_line)
 {
     if(!input_line) {
@@ -56,11 +92,19 @@ void parse_cmd(char* input_line)
         parse_error_subcmd(arguments);
         return;
     }
-    if(!strcmp(cmd, "help")) {
-        uart_println("This is the help page. The possible commands are: reset, help, error");
+    if(!strcmp(cmd, "flash")) {
+        parse_flash_subcmd(arguments);
         return;
     }
-    // TODO: measure, version
+    if(!strcmp(cmd, "measure")) {
+        perform_measurement();
+        return;
+    }
+    if(!strcmp(cmd, "help")) {
+        uart_println("This is the help page. The possible commands are: reset, measure, help, error, flash");
+        return;
+    }
+    // TODO: version
     uart_print("Unknown command: '");
     uart_print(cmd);
     uart_println("'");

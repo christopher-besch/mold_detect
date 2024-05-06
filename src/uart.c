@@ -55,11 +55,50 @@ void uart_println(const char* str)
     uart_print("\r\n");
 }
 
-void uart_print_uint8_t(uint8_t val)
+void uart_print_uint8_t_dec(uint8_t val)
 {
+    // max number is 255
     char str[4];
     utoa(val, str, 10);
     uart_print(str);
+}
+void uart_print_uint8_t_hex_raw(uint8_t val)
+{
+    // max number is ff
+    char str[3];
+    utoa(val, str, 0x10);
+    uart_print(str);
+}
+void uart_print_uint8_t_hex(uint16_t val)
+{
+    uart_print("0x");
+    uart_print_uint8_t_hex_raw((val >> 0x00) & 0xff);
+}
+void uart_print_uint16_t_hex(uint16_t val)
+{
+    uart_print("0x");
+    uart_print_uint8_t_hex_raw((val >> 0x08) & 0xff);
+    uart_print_uint8_t_hex_raw((val >> 0x00) & 0xff);
+}
+void uart_print_uint32_t_hex(uint32_t val)
+{
+    uart_print("0x");
+    uart_print_uint8_t_hex_raw((val >> 0x18) & 0xff);
+    uart_print_uint8_t_hex_raw((val >> 0x10) & 0xff);
+    uart_print_uint8_t_hex_raw((val >> 0x08) & 0xff);
+    uart_print_uint8_t_hex_raw((val >> 0x00) & 0xff);
+}
+void uart_print_uint64_t_hex(uint64_t val)
+{
+    uart_print("0x");
+    uart_print_uint8_t_hex_raw((val >> 0x38) & 0xff);
+    uart_print_uint8_t_hex_raw((val >> 0x30) & 0xff);
+    uart_print_uint8_t_hex_raw((val >> 0x28) & 0xff);
+    uart_print_uint8_t_hex_raw((val >> 0x20) & 0xff);
+    uart_print_uint8_t_hex_raw((val >> 0x18) & 0xff);
+    uart_print_uint8_t_hex_raw((val >> 0x10) & 0xff);
+    uart_print_uint8_t_hex_raw((val >> 0x08) & 0xff);
+    uart_print_uint8_t_hex_raw((val >> 0x00) & 0xff);
 }
 
 char* uart_rec_line()

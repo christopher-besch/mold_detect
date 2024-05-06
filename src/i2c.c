@@ -1,9 +1,7 @@
-#include "ic2.h"
-#include "uart.h"
+#include "i2c.h"
 
 #include <avr/io.h>
-#include <stdint.h>
-#include <stdlib.h>
+#include <avr/sfr_defs.h>
 #include <util/delay.h>
 
 #define WRITE 0x00
@@ -32,10 +30,6 @@ void await_transmission_conclusion()
 }
 int check_status(uint8_t expected_status)
 {
-    // char buf[3];
-    // itoa(TWSR & STATUS_MASK, buf, 16);
-    // uart_print("0x");
-    // uart_println(buf);
     return (TWSR & STATUS_MASK) == expected_status;
 }
 
@@ -88,7 +82,7 @@ int i2c_receive(uint8_t* data)
     return 0;
 }
 
-int i2c_measure_temp_hum(TempHum* temp_hum)
+int i2c_measure_temp_hum(FlashSensorData* sensor_data)
 {
     // send measurement request //
     if(i2c_start())
@@ -133,7 +127,11 @@ int i2c_measure_temp_hum(TempHum* temp_hum)
         return -1;
 
     // TODO: validate CRCs
-    temp_hum->temperature = (uint16_t)temp1 << 8 | (uint16_t)temp0;
-    temp_hum->humidity    = (uint16_t)hum1 << 8 | (uint16_t)hum0;
+    sensor_data->temperature     = (uint16_t)temp1 << 8 | (uint16_t)temp0;
+    sensor_data->humidity        = (uint16_t)hum1 << 8 | (uint16_t)hum0;
+    sensor_data->temperature_crc = temp_crc;
+    sensor_data->humidity_crc    = hum_crc;
+    sensor_data->padding[0]      = 0;
+    sensor_data->flags           = 0;
     return 0;
 }

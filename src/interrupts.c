@@ -128,6 +128,8 @@ ISR(PCINT2_vect)
 // use pin change interrupt 1 for PC0 (PCINT8)
 ISR(PCINT1_vect)
 {
+    // this could be simplified into a single reset()
+    // but this is clearer
     if(is_usb_mode()) {
         set_usb_led(1);
         reset();

@@ -9,24 +9,26 @@
 
 int main(void)
 {
-    // init
-    // this should go first as the avr wdt might still be enabled
+    // init //
+    uart_init();
+    // this should go as one of the first as the avr wdt might still be enabled
     interrupt_init();
     flash_init();
     led_init();
-    uart_init();
 
     set_atmosphere_led(1);
     uart_println("");
-    uart_println("");
     uart_println("mold_detect booting up");
+    uart_print("mold_detect (github.com/christopher-besch/mold_detect)\r\nversion: ");
+    uart_println(MOLD_DETECT_VERSION);
+    uart_println("Developed by Christopher Besch\r\nat the Chair for Embedded System at the KIT");
     _delay_ms(50);
     set_atmosphere_led(0);
 
     sei();
     // if you want uart for debugging, just enter the sleep cycle every time
-    // if(is_usb_mode())
-    //     enter_terminal();
-    // else
-    start_measurement_sleep_cycle();
+    if(is_usb_mode())
+        enter_terminal();
+    else
+        start_measurement_sleep_cycle();
 }

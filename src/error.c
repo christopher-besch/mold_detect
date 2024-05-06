@@ -3,33 +3,9 @@
 #include "uart.h"
 
 #include <avr/eeprom.h>
+#include <util/delay.h>
 
 #define ERROR_EEPROM_START_ADDR (uint8_t*)0x08
-
-const char* get_error_msg(MoldError* error)
-{
-    const char* invalid_error_msg = "An invalid error type was raised.";
-
-    switch(*error) {
-    case MOLD_ERROR_INVALID_ERROR:
-        return invalid_error_msg;
-    case MOLD_ERROR_FAILED_TO_WRITE_BLOCK:
-        return "Writing a block to the flash failed.";
-    case MOLD_ERROR_FAILED_TO_RESET_ERROR_COUNTS:
-        return "Resetting the error counts failed.";
-    case MOLD_ERROR_INVALID_PARAMS_NULL_TERMINATE_AFTER_FIRST_WORD:
-        return "null_terminate_after_first_word was called with NULL.";
-    case MOLD_ERROR_INVALID_PARAMS_PARSE_ERROR_SUBCMD:
-        return "parse_error_subcmd was called with NULL.";
-    case MOLD_ERROR_INVALID_PARAMS_PARSE_CMD:
-        return "parse_cmd was called with NULL.";
-    case MOLD_ERROR_TEST:
-        return "This a test error.";
-    default:
-        *error = MOLD_ERROR_INVALID_ERROR;
-        return invalid_error_msg;
-    }
-}
 
 uint8_t in_error_state()
 {
@@ -45,8 +21,9 @@ uint8_t in_error_state()
 
 void raise_error(MoldError error)
 {
-    const char* msg = get_error_msg(&error);
-    uart_println(msg);
+    uart_print("An error occurred: ERROR-");
+    uart_print_uint8_t_hex(error);
+    uart_println("");
 
     uint8_t* eeprom_addr = ERROR_EEPROM_START_ADDR + error;
     uint8_t  old_count   = eeprom_read_byte(eeprom_addr);
@@ -85,10 +62,12 @@ void list_errors()
             uart_print(">=255: ");
         else {
             uart_print("  ");
-            uart_print_uint8_t(count);
+            uart_print_uint8_t_dec(count);
             uart_print(": ");
         }
-        uart_println(get_error_msg(&error));
+        uart_print("ERROR-");
+        uart_print_uint8_t_hex(error);
+        uart_println("");
     }
     uart_println("# End of Occurred Errors #");
 }

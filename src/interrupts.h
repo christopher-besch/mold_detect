@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdint.h>
+#include <avr/sfr_defs.h>
 
 void interrupt_init();
 
