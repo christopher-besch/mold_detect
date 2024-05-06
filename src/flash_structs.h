@@ -22,7 +22,8 @@
 #define FLASH_BLOCK_SIZE      8
 #define FLASH_BLOCK_ADDR_MASK 0b111
 
-#define FLASH_SIZE 0x1000000
+#define FLASH_SIZE       0x1000000
+#define FLASH_BLOCKS_NUM (FLASH_SIZE / FLASH_BLOCK_SIZE)
 
 // values for FLASH_BLOCK_FLAG_TYPE in the flag byte of each block
 typedef enum _flashBlockType {

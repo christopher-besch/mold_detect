@@ -104,7 +104,7 @@ void parse_cmd(char* input_line)
         uart_println("This is the help page. The possible commands are: reset, measure, help, error, flash");
         return;
     }
-    // TODO: version
+    // TODO: version, time
     uart_print("Unknown command: '");
     uart_print(cmd);
     uart_println("'");

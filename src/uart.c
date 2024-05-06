@@ -4,9 +4,12 @@
 #include <util/delay.h>
 #include <util/setbaud.h>
 
+#include "error.h"
+#include "interrupts.h"
 #include "uart.h"
 
 static char cmd_buf[MAX_CMD_LENGTH];
+static char utoa_buf[5];
 
 void uart_init()
 {
@@ -57,48 +60,66 @@ void uart_println(const char* str)
 
 void uart_print_uint8_t_dec(uint8_t val)
 {
-    // max number is 255
-    char str[4];
-    utoa(val, str, 10);
-    uart_print(str);
+    utoa(val, utoa_buf, 10);
+    uart_print(utoa_buf);
 }
-void uart_print_uint8_t_hex_raw(uint8_t val)
+
+void uart_print_hex_digit(uint8_t val)
 {
-    // max number is ff
-    char str[3];
-    utoa(val, str, 0x10);
-    uart_print(str);
+    if(val < 0xa)
+        uart_trans('0' - 0x0 + val);
+    else if(val < 0x10)
+        uart_trans('a' - 0xa + val);
+    else {
+        raise_error(MOLD_ERROR_INVALID_PARAMS_UART_PRINT_HEX_DIGIT_MORE_THAN_ONE_DIGIT);
+        reset();
+    }
 }
 void uart_print_uint8_t_hex(uint16_t val)
 {
     uart_print("0x");
-    uart_print_uint8_t_hex_raw((val >> 0x00) & 0xff);
+    uart_print_hex_digit((val >> 0x04) & 0x0f);
+    uart_print_hex_digit((val >> 0x00) & 0x0f);
 }
 void uart_print_uint16_t_hex(uint16_t val)
 {
     uart_print("0x");
-    uart_print_uint8_t_hex_raw((val >> 0x08) & 0xff);
-    uart_print_uint8_t_hex_raw((val >> 0x00) & 0xff);
+    uart_print_hex_digit((val >> 0x0c) & 0x0f);
+    uart_print_hex_digit((val >> 0x08) & 0x0f);
+    uart_print_hex_digit((val >> 0x04) & 0x0f);
+    uart_print_hex_digit((val >> 0x00) & 0x0f);
 }
 void uart_print_uint32_t_hex(uint32_t val)
 {
     uart_print("0x");
-    uart_print_uint8_t_hex_raw((val >> 0x18) & 0xff);
-    uart_print_uint8_t_hex_raw((val >> 0x10) & 0xff);
-    uart_print_uint8_t_hex_raw((val >> 0x08) & 0xff);
-    uart_print_uint8_t_hex_raw((val >> 0x00) & 0xff);
+    uart_print_hex_digit((val >> 0x1c) & 0x0f);
+    uart_print_hex_digit((val >> 0x18) & 0x0f);
+    uart_print_hex_digit((val >> 0x14) & 0x0f);
+    uart_print_hex_digit((val >> 0x10) & 0x0f);
+    uart_print_hex_digit((val >> 0x0c) & 0x0f);
+    uart_print_hex_digit((val >> 0x08) & 0x0f);
+    uart_print_hex_digit((val >> 0x04) & 0x0f);
+    uart_print_hex_digit((val >> 0x00) & 0x0f);
 }
 void uart_print_uint64_t_hex(uint64_t val)
 {
     uart_print("0x");
-    uart_print_uint8_t_hex_raw((val >> 0x38) & 0xff);
-    uart_print_uint8_t_hex_raw((val >> 0x30) & 0xff);
-    uart_print_uint8_t_hex_raw((val >> 0x28) & 0xff);
-    uart_print_uint8_t_hex_raw((val >> 0x20) & 0xff);
-    uart_print_uint8_t_hex_raw((val >> 0x18) & 0xff);
-    uart_print_uint8_t_hex_raw((val >> 0x10) & 0xff);
-    uart_print_uint8_t_hex_raw((val >> 0x08) & 0xff);
-    uart_print_uint8_t_hex_raw((val >> 0x00) & 0xff);
+    uart_print_hex_digit((val >> 0x3c) & 0x0f);
+    uart_print_hex_digit((val >> 0x38) & 0x0f);
+    uart_print_hex_digit((val >> 0x34) & 0x0f);
+    uart_print_hex_digit((val >> 0x30) & 0x0f);
+    uart_print_hex_digit((val >> 0x2c) & 0x0f);
+    uart_print_hex_digit((val >> 0x28) & 0x0f);
+    uart_print_hex_digit((val >> 0x24) & 0x0f);
+    uart_print_hex_digit((val >> 0x20) & 0x0f);
+    uart_print_hex_digit((val >> 0x1c) & 0x0f);
+    uart_print_hex_digit((val >> 0x18) & 0x0f);
+    uart_print_hex_digit((val >> 0x14) & 0x0f);
+    uart_print_hex_digit((val >> 0x10) & 0x0f);
+    uart_print_hex_digit((val >> 0x0c) & 0x0f);
+    uart_print_hex_digit((val >> 0x08) & 0x0f);
+    uart_print_hex_digit((val >> 0x04) & 0x0f);
+    uart_print_hex_digit((val >> 0x00) & 0x0f);
 }
 
 char* uart_rec_line()

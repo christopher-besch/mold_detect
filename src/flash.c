@@ -133,7 +133,7 @@ void flash_read_data(uint32_t address, void* buf, uint8_t nbytes)
         raise_error(MOLD_ERROR_INVALID_PARAMS_FLASH_READ_DATA_BUF_IS_NULL);
         reset();
     }
-    if(address + nbytes >= FLASH_SIZE) {
+    if(address + nbytes > FLASH_SIZE) {
         raise_error(MOLD_ERROR_INVALID_PARAMS_FLASH_READ_DATA_ADDRESS_OR_NBYTES_IS_TOO_HIGH);
         reset();
     }
@@ -192,9 +192,6 @@ void flash_read_block(uint32_t address, GenericFlashBlock* block)
 
 uint8_t is_block_free(uint32_t address)
 {
-    uart_print("is_block_free: ");
-    uart_print_uint32_t_hex(address);
-    uart_println("");
     // address needs to start at a block
     if(address & FLASH_BLOCK_ADDR_MASK) {
         raise_error(MOLD_ERROR_INVALID_PARAMS_IS_BLOCK_FREE_ADDRESS_DOESNT_START_AT_BLOCK);
@@ -204,7 +201,8 @@ uint8_t is_block_free(uint32_t address)
     // this could be optimized by only reading the flag
     flash_read_block(address, &free_check_flash_block);
 
-    return free_check_flash_block.flags & FLASH_BLOCK_FLAG_FREE;
+    return free_check_flash_block.flags &
+           FLASH_BLOCK_FLAG_FREE;
 }
 
 void flash_find_next_free_block()
@@ -212,35 +210,24 @@ void flash_find_next_free_block()
     // adapted from: https://www.geeksforgeeks.org/implementing-upper_bound-and-lower_bound-in-c/
     uint32_t mid;
     // the search window is [low, high)
-    uint32_t low = 0;
-    uart_print_uint32_t_hex(0x1000000);
-    uart_println("");
-    uart_print_uint32_t_hex(FLASH_SIZE);
-    uart_println("");
-    uint32_t high = FLASH_SIZE / FLASH_BLOCK_SIZE;
+    uint32_t low  = 0;
+    uint32_t high = FLASH_BLOCKS_NUM;
 
     // until low is higher than high
     while(low < high) {
         mid = low + (high - low) / 2;
-        uart_print("low: ");
-        uart_print_uint32_t_hex(low);
-        uart_print(" mid: ");
-        uart_print_uint32_t_hex(mid);
-        uart_print(" high: ");
-        uart_print_uint32_t_hex(high);
-        uart_println("");
 
         if(is_block_free(mid * FLASH_BLOCK_SIZE))
             // use left subarray
             high = mid;
         else
             // use right subarray
-            low = mid + FLASH_BLOCK_SIZE;
+            low = mid + 1;
     }
 
     // when even the last block is not free
-    if(low < FLASH_SIZE && !is_block_free(low * FLASH_BLOCK_SIZE))
-        low += FLASH_BLOCK_SIZE;
+    if(low < FLASH_BLOCKS_NUM && !is_block_free(low * FLASH_BLOCK_SIZE))
+        ++low;
 
     next_free_block_addr = low * FLASH_BLOCK_SIZE;
     if(next_free_block_addr == FLASH_SIZE)
