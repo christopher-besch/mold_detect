@@ -48,7 +48,7 @@ $(OBJECTS): %.o: ../%.c
 main.hex: main.elf
 	rm -f main.hex
 	avr-objcopy -j .text -j .data -O ihex main.elf main.hex
-	avr-size --format=avr --mcu=DEVICE main.elf
+	avr-size --format=avr --mcu=$(DEVICE) main.elf
 
 clean:
 	rm -f *.o main.hex main.elf

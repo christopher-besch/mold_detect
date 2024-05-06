@@ -102,7 +102,7 @@ uint8_t is_usb_mode()
 
 void enable_measurements()
 {
-    should_measure = 0;
+    should_measure = 1;
 }
 
 void disable_measurements()

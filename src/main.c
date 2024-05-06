@@ -24,8 +24,9 @@ int main(void)
     set_atmosphere_led(0);
 
     sei();
-    if(is_usb_mode())
-        enter_terminal();
-    else
-        start_measurement_sleep_cycle();
+    // if you want uart for debugging, just enter the sleep cycle every time
+    // if(is_usb_mode())
+    //     enter_terminal();
+    // else
+    start_measurement_sleep_cycle();
 }
