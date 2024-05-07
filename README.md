@@ -7,6 +7,7 @@ Warn residents of mold-friendly atmosphere and log opened windows.
 This project is being developed in AVR_C on an Atmega328p.
 It provides:
 - Temperature, Humidity Logging (every minute with flash storage for two years)
+- LED warning to motivate the opening of windows or turnign on of heaters
 - Serial terminal via USB-C
 - ~5uA power consumption at 3V battery power
 
