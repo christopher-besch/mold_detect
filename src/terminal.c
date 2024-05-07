@@ -1,5 +1,6 @@
 #include "terminal.h"
 #include "error.h"
+#include "flash.h"
 #include "interrupts.h"
 #include "measure.h"
 #include "uart.h"
@@ -51,15 +52,17 @@ void parse_flash_subcmd(char* arguments)
         char resp = uart_rec();
         uart_println("");
         if(resp == 'y' || resp == 'Y')
-            uart_println("let's erase");
+            flash_chip_erase();
         else
             uart_println("Don't erase.");
         return;
     }
     if(!strcmp(sub_cmd, "usage")) {
+        flash_print_usage();
         return;
     }
     if(!strcmp(sub_cmd, "print")) {
+        // TODO:
         return;
     }
     if(!strcmp(sub_cmd, "help")) {

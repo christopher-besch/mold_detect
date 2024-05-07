@@ -22,5 +22,7 @@ void perform_measurement()
     uart_print("Humidity: ");
     uart_println(hum);
 
+    flash_write_next_block((GenericFlashBlock*)&sensor_data);
+
     set_atmosphere_led(0);
 }

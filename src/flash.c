@@ -12,20 +12,15 @@
 #define FLASH_READ_DATA       0x03
 #define FLASH_READ_STATUS_REG 0x05
 #define FLASH_WRITE_ENABLE    0x06
-#define FLASH_SECTOR_ERASE    0x20
+// 0x60 would also work
+#define FLASH_CHIP_ERASE 0xc7
 
 static uint32_t          next_free_block_addr = 0;
 static GenericFlashBlock free_check_flash_block;
 
-void flash_init()
+uint8_t flash_is_full()
 {
-    if(sizeof(GenericFlashBlock) != FLASH_BLOCK_SIZE ||
-       sizeof(FlashSensorData) != FLASH_BLOCK_SIZE ||
-       sizeof(FlashTimestamp) != FLASH_BLOCK_SIZE)
-        return;
-
-    spi_controller_init();
-    flash_find_next_free_block();
+    return next_free_block_addr == FLASH_SIZE;
 }
 
 void flash_write_enable()
@@ -60,29 +55,6 @@ void send_address(uint32_t address)
     spi_transceive_char((address >> 0x0) & 0xff);
 }
 
-uint8_t flash_is_sector_erased(uint32_t address)
-{
-    // address needs to be at the start of a sector
-    if(address & 0xfff) {
-        raise_error(MOLD_ERROR_INVALID_PARAMS_FLASH_IS_SECTOR_ERASED_NOT_AT_START_OF_SECTOR);
-        reset();
-    }
-
-    spi_start();
-    spi_transceive_char(FLASH_READ_DATA);
-    send_address(address);
-
-    for(uint16_t i = 0; i < 0xfff; ++i) {
-        if(spi_receive_char() != (char)0xff) {
-            spi_end();
-            return 0;
-        }
-    }
-
-    spi_end();
-    return 1;
-}
-
 int flash_is_data_valid(uint32_t address, void* data, uint8_t nbytes)
 {
     if(!data) {
@@ -105,28 +77,8 @@ int flash_is_data_valid(uint32_t address, void* data, uint8_t nbytes)
     return 1;
 }
 
-void flash_sector_erase(uint32_t address)
-{
-    if(address & 0xfff) {
-        raise_error(MOLD_ERROR_INVALID_PARAMS_FLASH_SECTOR_ERASE_NOT_AT_START_OF_SECTOR);
-        reset();
-    }
-
-    flash_write_enable();
-    spi_start();
-
-    spi_transceive_char(FLASH_SECTOR_ERASE);
-    send_address(address);
-
-    spi_end();
-    flash_await_write_completion();
-
-    if(!flash_is_sector_erased(address)) {
-        raise_error(MOLD_ERROR_INVALID_PARAMS_FLASH_SECTOR_ERASE_ERASE_FAILED);
-        reset();
-    }
-}
-
+// write nbytes bytes from flash chip at address address to buf
+// The flash chip may not be in power down mode
 void flash_read_data(uint32_t address, void* buf, uint8_t nbytes)
 {
     if(!buf) {
@@ -149,6 +101,20 @@ void flash_read_data(uint32_t address, void* buf, uint8_t nbytes)
     spi_end();
 }
 
+// Write nbytes bytes from data to flash chip starting at address address.
+// The area written to must be erased beforehand.
+// The flash chip may not be in power down mode
+// more than 256 bytes (one page) can't be written with one write command
+//
+// excempt from data sheet p. 37:
+//
+// "If an entire 256 byte page is to be programmed, the last address byte (the 8 least significant address bits)
+// should be set to 0. If the last address byte is not zero, and the number of clocks exceeds the remaining
+// page length, the addressing will wrap to the beginning of the page. In some cases, less than 256 bytes (a
+// partial page) can be programmed without having any effect on other bytes within the same page. One
+// condition to perform a partial page program is that the number of clocks cannot exceed the remaining
+// page length. If more than 256 bytes are sent to the device the addressing will wrap to the beginning of the
+// page and overwrite previously sent data."
 void flash_write_data(uint32_t address, void* data, uint8_t nbytes)
 {
     if(!data) {
@@ -188,6 +154,21 @@ void flash_read_block(uint32_t address, GenericFlashBlock* block)
     }
 
     flash_read_data(address, block, sizeof(GenericFlashBlock));
+}
+
+void flash_write_block(uint32_t address, GenericFlashBlock* block)
+{
+    if(!block) {
+        raise_error(MOLD_ERROR_INVALID_PARAMS_FLASH_WRITE_BLOCK_ADDRESS_BLOCK_IS_NULL);
+        reset();
+    }
+    // address needs to start at a block
+    if(address & FLASH_BLOCK_ADDR_MASK) {
+        raise_error(MOLD_ERROR_INVALID_PARAMS_FLASH_WRITE_BLOCK_ADDRESS_DOESNT_START_AT_BLOCK);
+        reset();
+    }
+
+    flash_write_data(address, &block, sizeof(GenericFlashBlock));
 }
 
 uint8_t is_block_free(uint32_t address)
@@ -230,6 +211,69 @@ void flash_find_next_free_block()
         ++low;
 
     next_free_block_addr = low * FLASH_BLOCK_SIZE;
-    if(next_free_block_addr == FLASH_SIZE)
+    flash_print_usage();
+}
+
+void flash_write_next_block(GenericFlashBlock* block)
+{
+    if(!block) {
+        raise_error(MOLD_ERROR_INVALID_PARAMS_FLASH_WRITE_NEXT_BLOCK_BLOCK_IS_NULL);
+        reset();
+    }
+    if(flash_is_full()) {
+        raise_error(MOLD_ERROR_FLASH_WRITE_NEXT_BLOCK_FLASH_IS_FULL);
+        return;
+    }
+    flash_write_block(next_free_block_addr, block);
+
+    // check next_free_block_addr is found correctly
+    uint32_t expected_next_block = next_free_block_addr + FLASH_BLOCK_SIZE;
+    flash_find_next_free_block();
+    if(next_free_block_addr != expected_next_block) {
+        raise_error(MOLD_ERROR_FLASH_WRITE_NEXT_BLOCK_FIND_NEXT_FREE_BLOCK_FAILED);
+        reset();
+    }
+}
+
+void flash_print_usage()
+{
+    if(flash_is_full())
         uart_println("Warning: flash is full");
+    else {
+        uart_print("Next free block is at: ");
+        uart_print_uint32_t_hex(next_free_block_addr);
+        uart_println("");
+    }
+}
+
+void flash_chip_erase()
+{
+    uart_print("Erasing chip: ...");
+    flash_write_enable();
+    spi_start();
+
+    spi_transceive_char(FLASH_CHIP_ERASE);
+
+    spi_end();
+    flash_await_write_completion();
+
+    uart_println("done");
+
+    // check next_free_block_addr is found correctly
+    flash_find_next_free_block();
+    if(next_free_block_addr != 0) {
+        raise_error(MOLD_ERROR_FLASH_FLASH_CHIP_ERASE_FIND_NEXT_FREE_BLOCK_FAILED);
+        reset();
+    }
+}
+
+void flash_init()
+{
+    if(sizeof(GenericFlashBlock) != FLASH_BLOCK_SIZE ||
+       sizeof(FlashSensorData) != FLASH_BLOCK_SIZE ||
+       sizeof(FlashTimestamp) != FLASH_BLOCK_SIZE)
+        return;
+
+    spi_controller_init();
+    flash_find_next_free_block();
 }
