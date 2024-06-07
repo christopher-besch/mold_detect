@@ -5,6 +5,7 @@
 #include <util/setbaud.h>
 
 #include "error.h"
+#include "flash_blocks.h"
 #include "interrupts.h"
 #include "uart.h"
 
@@ -43,6 +44,24 @@ unsigned char uart_rec()
         ;
     // return received byte
     return UDR0;
+}
+
+char* uart_rec_line()
+{
+    // this also sets the null terminator
+    memset(cmd_buf, 0, MAX_CMD_LENGTH);
+    for(uint8_t i = 0; i < MAX_CMD_LENGTH - 1; ++i) {
+        char c = uart_rec();
+        // exclude \r and \n in the line
+        if(c == '\r')
+            break;
+        if(c == '\n')
+            continue;
+        uart_trans(c);
+        cmd_buf[i] = c;
+    }
+    uart_println("");
+    return cmd_buf;
 }
 
 void uart_print(const char* str)
@@ -121,21 +140,73 @@ void uart_print_uint64_t_hex(uint64_t val)
     uart_print_hex_digit((val >> 0x04) & 0x0f);
     uart_print_hex_digit((val >> 0x00) & 0x0f);
 }
-
-char* uart_rec_line()
+void uart_print_bool(uint8_t b)
 {
-    // this also sets the null terminator
-    memset(cmd_buf, 0, MAX_CMD_LENGTH);
-    for(uint8_t i = 0; i < MAX_CMD_LENGTH - 1; ++i) {
-        char c = uart_rec();
-        // exclude \r and \n in the line
-        if(c == '\r')
-            break;
-        if(c == '\n')
-            continue;
-        uart_trans(c);
-        cmd_buf[i] = c;
+    uart_print(b ? "true" : "false");
+}
+
+void flash_print_sensor_data_block(FlashSensorData* block)
+{
+    if(!block) {
+        raise_error(MOLD_ERROR_FLASH_PRINT_SENSOR_DATA_BLOCK_NULL);
+        reset();
     }
-    uart_println("");
-    return cmd_buf;
+    uart_print("\"raw\":\"");
+    uart_print_uint64_t_hex(*(uint64_t*)block);
+    uart_print("\",\"type\":\"sensor_data\"");
+    uart_print(",\"is_free\":");
+    uart_print_bool(flash_is_block_free(block->flags));
+    uart_print(",\"is_atmos_bad\":");
+    uart_print_bool(flash_is_block_atmos_bad(block->flags));
+    uart_print(",\"is_err_set\":");
+    uart_print_bool(flash_is_block_err_set(block->flags));
+    uart_print(",\"temp\":\"");
+    uart_print_uint16_t_hex(block->temperature);
+    uart_print("\",\"hum\":\"");
+    uart_print_uint16_t_hex(block->humidity);
+    uart_print("\",\"temp_crc\":\"");
+    uart_print_uint16_t_hex(block->temperature_crc);
+    uart_print("\",\"hum_crc\":\"");
+    uart_print("\"");
+    uart_print_uint16_t_hex(block->humidity_crc);
+}
+void flash_print_timestamp_block(FlashTimestamp* block)
+{
+    if(!block) {
+        raise_error(MOLD_ERROR_FLASH_PRINT_TIMESTAMP_BLOCK_NULL);
+        reset();
+    }
+    uart_print("\"raw\":\"");
+    uart_print_uint64_t_hex(*(uint64_t*)block);
+    uart_print("\",\"type\":\"timestamp\"");
+    uart_print(",\"is_free\":");
+    uart_print_bool(flash_is_block_free(block->flags));
+    uart_print(",\"is_atmos_bad\":");
+    uart_print_bool(flash_is_block_atmos_bad(block->flags));
+    uart_print(",\"is_err_set\":");
+    uart_print_bool(flash_is_block_err_set(block->flags));
+    uart_print(",\"timestamp\":\"");
+    uart_print_uint64_t_hex(block->unix_second_timestamp);
+    uart_print("\"");
+}
+void uart_print_flash_block(GenericFlashBlock* block)
+{
+    if(!block) {
+        raise_error(MOLD_ERROR_UART_PRINT_FLASH_BLOCK_NULL);
+        reset();
+    }
+
+    uart_print("{");
+    switch(flash_get_block_type(block->flags)) {
+    case SENSOR_DATA_BLOCK:
+        flash_print_sensor_data_block((FlashSensorData*)block);
+        break;
+    case TIMESTAMP_BLOCK:
+        flash_print_timestamp_block((FlashTimestamp*)block);
+        break;
+    default:
+        raise_error(MOLD_ERROR_UART_PRINT_FLASH_BLOCK_INVALID_TYPE);
+        reset();
+    }
+    uart_print("}");
 }

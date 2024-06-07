@@ -1,6 +1,7 @@
 #include "terminal.h"
 #include "error.h"
 #include "flash.h"
+#include "flash_blocks.h"
 #include "interrupts.h"
 #include "measure.h"
 #include "uart.h"
@@ -62,7 +63,7 @@ void parse_flash_subcmd(char* arguments)
         return;
     }
     if(!strcmp(sub_cmd, "print")) {
-        // TODO:
+        flash_print_all_blocks();
         return;
     }
     if(!strcmp(sub_cmd, "help")) {

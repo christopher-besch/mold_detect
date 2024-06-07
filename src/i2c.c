@@ -128,6 +128,6 @@ int i2c_measure_temp_hum(FlashSensorData* sensor_data)
         return -1;
 
     // TODO: validate CRCs
-    create_flash_sensor_data(sensor_data, (uint16_t)temp1 << 8 | (uint16_t)temp0, (uint16_t)hum1 << 8 | (uint16_t)hum0, temp_crc, hum_crc);
+    flash_create_sensor_data_block(sensor_data, (uint16_t)temp1 << 8 | (uint16_t)temp0, (uint16_t)hum1 << 8 | (uint16_t)hum0, temp_crc, hum_crc);
     return 0;
 }

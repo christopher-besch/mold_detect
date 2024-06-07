@@ -1,6 +1,6 @@
 #pragma once
 
-#include "flash_structs.h"
+#include "flash_blocks.h"
 
 // Ask the sensor about the current atmosphere condition.
 // Store those values in sensor_data.

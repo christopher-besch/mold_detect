@@ -4,7 +4,6 @@
 #include "error.h"
 #include "flash.h"
 #include "interrupts.h"
-#include "measure.h"
 #include "spi.h"
 #include "uart.h"
 
@@ -16,7 +15,8 @@
 // 0x60 would also work
 #define FLASH_CHIP_ERASE 0xc7
 
-static uint32_t next_free_block_addr = 0;
+static uint32_t          next_free_block_addr = 0;
+static GenericFlashBlock block_buf;
 
 uint8_t flash_is_full()
 {
@@ -168,11 +168,10 @@ void flash_write_block(uint32_t address, GenericFlashBlock* block)
         reset();
     }
 
-    flash_write_data(address, &block, sizeof(GenericFlashBlock));
+    flash_write_data(address, block, sizeof(GenericFlashBlock));
 }
 
-static GenericFlashBlock free_check_flash_block;
-uint8_t                  is_block_free(uint32_t address)
+uint8_t is_block_free(uint32_t address)
 {
     // address needs to start at a block
     if(address & FLASH_BLOCK_ADDR_MASK) {
@@ -181,10 +180,9 @@ uint8_t                  is_block_free(uint32_t address)
     }
 
     // this could be optimized by only reading the flag
-    flash_read_block(address, &free_check_flash_block);
+    flash_read_block(address, &block_buf);
 
-    return free_check_flash_block.flags &
-           FLASH_BLOCK_FLAG_FREE;
+    return flash_is_block_free(block_buf.flags);
 }
 
 void flash_check_correct_free_block_addr()
@@ -235,6 +233,10 @@ void flash_write_next_block(GenericFlashBlock* block)
         raise_error(MOLD_ERROR_INVALID_PARAMS_FLASH_WRITE_NEXT_BLOCK_BLOCK_IS_NULL);
         reset();
     }
+    uart_println("attempting to write block:");
+    uart_print_flash_block(block);
+    uart_println("");
+
     if(flash_is_full()) {
         raise_error(MOLD_ERROR_FLASH_WRITE_NEXT_BLOCK_FLASH_IS_FULL);
         return;
@@ -258,13 +260,10 @@ void flash_print_usage()
     else {
         uart_print("Next free block is at: ");
         uart_print_uint32_t_hex(next_free_block_addr);
+        uart_print(" of ");
+        uart_print_uint32_t_hex(FLASH_SIZE);
         uart_println("");
     }
-}
-
-void flash_print_all_blocks()
-{
-    // TODO: implement
 }
 
 void flash_chip_erase()
@@ -299,27 +298,16 @@ void flash_init()
     flash_find_next_free_block();
 }
 
-void set_block_flags(uint8_t* flags, FlashBlockType block_type)
+void flash_print_all_blocks()
 {
-    *flags = 0;
-    *flags |= 0 * FLASH_BLOCK_FLAG_FREE;
-    *flags |= is_atmosphere_bad() * FLASH_BLOCK_FLAG_ATMOS_BAD;
-    *flags |= in_error_state() * FLASH_BLOCK_FLAG_ERR_SET;
-    *flags |= block_type;
-}
+    uart_println("[");
+    for(uint32_t addr = 0; addr < next_free_block_addr; addr += FLASH_BLOCK_SIZE) {
+        flash_read_block(addr, &block_buf);
+        uart_print_flash_block(&block_buf);
 
-void create_flash_sensor_data(FlashSensorData* sensor_data_block, uint32_t temp, uint32_t hum, uint32_t temp_crc, uint32_t hum_crc)
-{
-    sensor_data_block->temperature     = temp;
-    sensor_data_block->humidity        = hum;
-    sensor_data_block->temperature_crc = temp_crc;
-    sensor_data_block->humidity_crc    = hum_crc;
-    sensor_data_block->padding[0]      = 0;
-    set_block_flags(&sensor_data_block->flags, SENSOR_DATA_BLOCK);
-}
-
-void create_flash_timestamp(FlashTimestamp* timestamp_block, uint64_t unix_second_timestamp)
-{
-    timestamp_block->unix_second_timestamp = unix_second_timestamp;
-    set_block_flags(&timestamp_block->flags, TIMESTAMP_BLOCK);
+        // is this the last block?
+        if(addr != next_free_block_addr)
+            uart_println(",");
+    }
+    uart_println("]");
 }

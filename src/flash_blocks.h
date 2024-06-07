@@ -47,10 +47,15 @@ typedef struct __attribute__((packed)) _genericFlashBlock {
 // Every time the system receives a timing interrupt we log the sensor data to the flash.
 // That way we keep track of the current time.
 typedef struct __attribute__((packed)) _flashSensorData {
+    // calculate temperature in C with:
+    // -45 + 175 * temperature / (2**16-1)
     uint16_t temperature;
+    // calculate relative humidity in % with:
+    // 100 * humidity / (2**16-1)
     uint16_t humidity;
-    uint8_t  temperature_crc;
-    uint8_t  humidity_crc;
+    // see sht30 documentation
+    uint8_t temperature_crc;
+    uint8_t humidity_crc;
 
     char padding[1];
     // flags from the generic block definition
@@ -67,3 +72,12 @@ typedef struct __attribute__((packed)) _flashTimestamp {
     // flags from the generic block definition
     uint8_t flags;
 } FlashTimestamp;
+
+// only create the block, don't save it to the flash just yet
+void flash_create_sensor_data_block(FlashSensorData* sensor_data_block, uint32_t temp, uint32_t hum, uint32_t temp_crc, uint32_t hum_crc);
+void flash_create_timestamp_block(FlashTimestamp* timestamp_block, uint64_t unix_second_timestamp);
+
+FlashBlockType flash_get_block_type(uint8_t flags);
+uint8_t        flash_is_block_free(uint8_t flags);
+uint8_t        flash_is_block_atmos_bad(uint8_t flags);
+uint8_t        flash_is_block_err_set(uint8_t flags);
