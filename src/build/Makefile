@@ -2,6 +2,7 @@ DEVICE                 = atmega328p
 CLOCK                  = 2000000
 BAUD                   = 9600
 MOLD_DETECT_VERSION    = \"0.1.0\"
+COMMIT_HASH            = \"$(shell git rev-parse HEAD)\"
 # using dw-link
 PROGRAMMER = -c stk500v1 -P /dev/ttyACM0
 # using avrispmkII
@@ -25,7 +26,7 @@ OBJECTS = uart.o spi.o flash.o flash_blocks.o i2c.o error.o led.o terminal.o int
 # -> 2MHz Clock
 FUSES      = -U hfuse:w:0xd1:m -U lfuse:w:0x6f:m
 AVRDUDE    = avrdude $(PROGRAMMER) -p $(DEVICE)
-COMPILE    = avr-gcc -Wall -g -Og -DF_CPU=$(CLOCK) -DBAUD=$(BAUD) -DMOLD_DETECT_VERSION=$(MOLD_DETECT_VERSION) -mmcu=$(DEVICE)
+COMPILE    = avr-gcc -Wall -g -Og -DF_CPU=$(CLOCK) -DBAUD=$(BAUD) -DMOLD_DETECT_VERSION=$(MOLD_DETECT_VERSION) -DCOMMIT_HASH=$(COMMIT_HASH) -mmcu=$(DEVICE)
 
 .PHONY: all install flash fuse clean
 
