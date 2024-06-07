@@ -187,6 +187,18 @@ uint8_t                  is_block_free(uint32_t address)
            FLASH_BLOCK_FLAG_FREE;
 }
 
+void flash_check_correct_free_block_addr()
+{
+    if(!flash_is_full() && !is_block_free(next_free_block_addr)) {
+        raise_error(MOLD_ERROR_FLASH_CHECK_CORRECT_FREE_BLOCK_ADDR_NEXT_FREE_BLOCK_NOT_FREE);
+        reset();
+    }
+    if(next_free_block_addr != 0 && is_block_free(next_free_block_addr - FLASH_BLOCK_SIZE)) {
+        raise_error(MOLD_ERROR_FLASH_CHECK_CORRECT_FREE_BLOCK_ADDR_BEFORE_NEXT_FREE_BLOCK_FREE);
+        reset();
+    }
+}
+
 // Perform a binary search to find the first free block.
 void flash_find_next_free_block()
 {
@@ -213,6 +225,7 @@ void flash_find_next_free_block()
         ++low;
 
     next_free_block_addr = low * FLASH_BLOCK_SIZE;
+    flash_check_correct_free_block_addr();
     flash_print_usage();
 }
 
@@ -247,6 +260,11 @@ void flash_print_usage()
         uart_print_uint32_t_hex(next_free_block_addr);
         uart_println("");
     }
+}
+
+void flash_print_all_blocks()
+{
+    // TODO: implement
 }
 
 void flash_chip_erase()
