@@ -6,7 +6,6 @@
 
 #include "error.h"
 #include "flash_blocks.h"
-#include "interrupts.h"
 #include "uart.h"
 
 static char cmd_buf[MAX_CMD_LENGTH];
@@ -90,8 +89,7 @@ void uart_print_hex_digit(uint8_t val)
     else if(val < 0x10)
         uart_trans('a' - 0xa + val);
     else {
-        raise_error(MOLD_ERROR_INVALID_PARAMS_UART_PRINT_HEX_DIGIT_MORE_THAN_ONE_DIGIT);
-        reset();
+        raise_fatal_error(MOLD_ERROR_INVALID_PARAMS_UART_PRINT_HEX_DIGIT_MORE_THAN_ONE_DIGIT);
     }
 }
 void uart_print_uint8_t_hex(uint16_t val)
@@ -140,17 +138,19 @@ void uart_print_uint64_t_hex(uint64_t val)
     uart_print_hex_digit((val >> 0x04) & 0x0f);
     uart_print_hex_digit((val >> 0x00) & 0x0f);
 }
-void uart_print_bool(uint8_t b)
+void uart_print_float(float val)
 {
-    uart_print(b ? "true" : "false");
+    // TODO: implement
+    float a = val * 3.5f;
+}
+void uart_print_bool(uint8_t val)
+{
+    uart_print(val ? "true" : "false");
 }
 
 void flash_print_sensor_data_block(FlashSensorData* block)
 {
-    if(!block) {
-        raise_error(MOLD_ERROR_FLASH_PRINT_SENSOR_DATA_BLOCK_NULL);
-        reset();
-    }
+    MD_ASSERT(block, MOLD_ERROR_FLASH_PRINT_SENSOR_DATA_BLOCK_NULL);
     uart_print("\"raw\":\"");
     uart_print_uint64_t_hex(*(uint64_t*)block);
     uart_print("\",\"type\":\"sensor_data\"");
@@ -172,10 +172,7 @@ void flash_print_sensor_data_block(FlashSensorData* block)
 }
 void flash_print_timestamp_block(FlashTimestamp* block)
 {
-    if(!block) {
-        raise_error(MOLD_ERROR_FLASH_PRINT_TIMESTAMP_BLOCK_NULL);
-        reset();
-    }
+    MD_ASSERT(block, MOLD_ERROR_FLASH_PRINT_TIMESTAMP_BLOCK_NULL);
     uart_print("\"raw\":\"");
     uart_print_uint64_t_hex(*(uint64_t*)block);
     uart_print("\",\"type\":\"timestamp\"");
@@ -191,10 +188,7 @@ void flash_print_timestamp_block(FlashTimestamp* block)
 }
 void uart_print_flash_block(GenericFlashBlock* block)
 {
-    if(!block) {
-        raise_error(MOLD_ERROR_UART_PRINT_FLASH_BLOCK_NULL);
-        reset();
-    }
+    MD_ASSERT(block, MOLD_ERROR_UART_PRINT_FLASH_BLOCK_NULL);
 
     uart_print("{");
     switch(flash_get_block_type(block->flags)) {
@@ -205,8 +199,7 @@ void uart_print_flash_block(GenericFlashBlock* block)
         flash_print_timestamp_block((FlashTimestamp*)block);
         break;
     default:
-        raise_error(MOLD_ERROR_UART_PRINT_FLASH_BLOCK_INVALID_TYPE);
-        reset();
+        raise_fatal_error(MOLD_ERROR_UART_PRINT_FLASH_BLOCK_INVALID_TYPE);
     }
     uart_print("}");
 }

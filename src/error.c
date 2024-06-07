@@ -1,4 +1,5 @@
 #include "error.h"
+#include "interrupts.h"
 #include "led.h"
 #include "uart.h"
 
@@ -32,6 +33,11 @@ void raise_error(MoldError error)
     }
 
     set_error_led(1);
+}
+void raise_fatal_error(MoldError error)
+{
+    raise_error(error);
+    reset();
 }
 
 void reset_errors()

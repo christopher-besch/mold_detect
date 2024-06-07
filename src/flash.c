@@ -3,7 +3,6 @@
 
 #include "error.h"
 #include "flash.h"
-#include "interrupts.h"
 #include "spi.h"
 #include "uart.h"
 
@@ -57,10 +56,7 @@ void send_address(uint32_t address)
 
 int flash_is_data_valid(uint32_t address, void* data, uint8_t nbytes)
 {
-    if(!data) {
-        raise_error(MOLD_ERROR_INVALID_PARAMS_FLASH_IS_DATA_VALID_DATA_IS_NULL);
-        reset();
-    }
+    MD_ASSERT(data, MOLD_ERROR_INVALID_PARAMS_FLASH_IS_DATA_VALID_DATA_IS_NULL);
 
     spi_start();
     spi_transceive_char(FLASH_READ_DATA);
@@ -81,14 +77,8 @@ int flash_is_data_valid(uint32_t address, void* data, uint8_t nbytes)
 // The flash chip may not be in power down mode
 void flash_read_data(uint32_t address, void* buf, uint8_t nbytes)
 {
-    if(!buf) {
-        raise_error(MOLD_ERROR_INVALID_PARAMS_FLASH_READ_DATA_BUF_IS_NULL);
-        reset();
-    }
-    if(address + nbytes > FLASH_SIZE) {
-        raise_error(MOLD_ERROR_INVALID_PARAMS_FLASH_READ_DATA_ADDRESS_OR_NBYTES_IS_TOO_HIGH);
-        reset();
-    }
+    MD_ASSERT(buf, MOLD_ERROR_INVALID_PARAMS_FLASH_READ_DATA_BUF_IS_NULL);
+    MD_ASSERT(address + nbytes <= FLASH_SIZE, MOLD_ERROR_INVALID_PARAMS_FLASH_READ_DATA_ADDRESS_OR_NBYTES_IS_TOO_HIGH);
 
     spi_start();
     spi_transceive_char(FLASH_READ_DATA);
@@ -117,10 +107,7 @@ void flash_read_data(uint32_t address, void* buf, uint8_t nbytes)
 // page and overwrite previously sent data."
 void flash_write_data(uint32_t address, void* data, uint8_t nbytes)
 {
-    if(!data) {
-        raise_error(MOLD_ERROR_INVALID_PARAMS_FLASH_WRITE_DATA_DATA_IS_NULL);
-        reset();
-    }
+    MD_ASSERT(data, MOLD_ERROR_INVALID_PARAMS_FLASH_WRITE_DATA_DATA_IS_NULL);
 
     flash_write_enable();
     spi_start();
@@ -135,38 +122,23 @@ void flash_write_data(uint32_t address, void* data, uint8_t nbytes)
     spi_end();
     flash_await_write_completion();
 
-    if(!flash_is_data_valid(address, data, nbytes)) {
-        raise_error(MOLD_ERROR_FLASH_WRITE_DATA_VALIDATION_FAILED);
-        reset();
-    }
+    MD_ASSERT(flash_is_data_valid(address, data, nbytes), MOLD_ERROR_FLASH_WRITE_DATA_VALIDATION_FAILED);
 }
 
 void flash_read_block(uint32_t address, GenericFlashBlock* block)
 {
-    if(!block) {
-        raise_error(MOLD_ERROR_INVALID_PARAMS_FLASH_READ_BLOCK_BLOCK_IS_NULL);
-        reset();
-    }
+    MD_ASSERT(block, MOLD_ERROR_INVALID_PARAMS_FLASH_READ_BLOCK_BLOCK_IS_NULL);
     // address needs to start at a block
-    if(address & FLASH_BLOCK_ADDR_MASK) {
-        raise_error(MOLD_ERROR_INVALID_PARAMS_FLASH_READ_BLOCK_ADDRESS_DOESNT_START_AT_BLOCK);
-        reset();
-    }
+    MD_ASSERT((address & FLASH_BLOCK_ADDR_MASK) == 0, MOLD_ERROR_INVALID_PARAMS_FLASH_READ_BLOCK_ADDRESS_DOESNT_START_AT_BLOCK);
 
     flash_read_data(address, block, sizeof(GenericFlashBlock));
 }
 
 void flash_write_block(uint32_t address, GenericFlashBlock* block)
 {
-    if(!block) {
-        raise_error(MOLD_ERROR_INVALID_PARAMS_FLASH_WRITE_BLOCK_ADDRESS_BLOCK_IS_NULL);
-        reset();
-    }
+    MD_ASSERT(block, MOLD_ERROR_INVALID_PARAMS_FLASH_WRITE_BLOCK_ADDRESS_BLOCK_IS_NULL);
     // address needs to start at a block
-    if(address & FLASH_BLOCK_ADDR_MASK) {
-        raise_error(MOLD_ERROR_INVALID_PARAMS_FLASH_WRITE_BLOCK_ADDRESS_DOESNT_START_AT_BLOCK);
-        reset();
-    }
+    MD_ASSERT((address & FLASH_BLOCK_ADDR_MASK) == 0, MOLD_ERROR_INVALID_PARAMS_FLASH_WRITE_BLOCK_ADDRESS_DOESNT_START_AT_BLOCK);
 
     flash_write_data(address, block, sizeof(GenericFlashBlock));
 }
@@ -174,10 +146,7 @@ void flash_write_block(uint32_t address, GenericFlashBlock* block)
 uint8_t is_block_free(uint32_t address)
 {
     // address needs to start at a block
-    if(address & FLASH_BLOCK_ADDR_MASK) {
-        raise_error(MOLD_ERROR_INVALID_PARAMS_IS_BLOCK_FREE_ADDRESS_DOESNT_START_AT_BLOCK);
-        reset();
-    }
+    MD_ASSERT((address & FLASH_BLOCK_ADDR_MASK) == 0, MOLD_ERROR_INVALID_PARAMS_IS_BLOCK_FREE_ADDRESS_DOESNT_START_AT_BLOCK);
 
     // this could be optimized by only reading the flag
     flash_read_block(address, &block_buf);
@@ -187,14 +156,8 @@ uint8_t is_block_free(uint32_t address)
 
 void flash_check_correct_free_block_addr()
 {
-    if(!flash_is_full() && !is_block_free(next_free_block_addr)) {
-        raise_error(MOLD_ERROR_FLASH_CHECK_CORRECT_FREE_BLOCK_ADDR_NEXT_FREE_BLOCK_NOT_FREE);
-        reset();
-    }
-    if(next_free_block_addr != 0 && is_block_free(next_free_block_addr - FLASH_BLOCK_SIZE)) {
-        raise_error(MOLD_ERROR_FLASH_CHECK_CORRECT_FREE_BLOCK_ADDR_BEFORE_NEXT_FREE_BLOCK_FREE);
-        reset();
-    }
+    MD_ASSERT(flash_is_full() || is_block_free(next_free_block_addr), MOLD_ERROR_FLASH_CHECK_CORRECT_FREE_BLOCK_ADDR_NEXT_FREE_BLOCK_NOT_FREE);
+    MD_ASSERT(next_free_block_addr == 0 || !is_block_free(next_free_block_addr - FLASH_BLOCK_SIZE), MOLD_ERROR_FLASH_CHECK_CORRECT_FREE_BLOCK_ADDR_BEFORE_NEXT_FREE_BLOCK_FREE);
 }
 
 // Perform a binary search to find the first free block.
@@ -229,28 +192,19 @@ void flash_find_next_free_block()
 
 void flash_write_next_block(GenericFlashBlock* block)
 {
-    if(!block) {
-        raise_error(MOLD_ERROR_INVALID_PARAMS_FLASH_WRITE_NEXT_BLOCK_BLOCK_IS_NULL);
-        reset();
-    }
+    MD_ASSERT(block, MOLD_ERROR_INVALID_PARAMS_FLASH_WRITE_NEXT_BLOCK_BLOCK_IS_NULL);
     uart_println("attempting to write block:");
     uart_print_flash_block(block);
     uart_println("");
 
-    if(flash_is_full()) {
-        raise_error(MOLD_ERROR_FLASH_WRITE_NEXT_BLOCK_FLASH_IS_FULL);
-        return;
-    }
+    MD_ASSERT(!flash_is_full(), MOLD_ERROR_FLASH_WRITE_NEXT_BLOCK_FLASH_IS_FULL);
     flash_write_block(next_free_block_addr, block);
 
     // Check next_free_block_addr is found correctly.
     // The binary search is so fast we can effort this check.
     uint32_t expected_next_block = next_free_block_addr + FLASH_BLOCK_SIZE;
     flash_find_next_free_block();
-    if(next_free_block_addr != expected_next_block) {
-        raise_error(MOLD_ERROR_FLASH_WRITE_NEXT_BLOCK_FIND_NEXT_FREE_BLOCK_FAILED);
-        reset();
-    }
+    MD_ASSERT(next_free_block_addr == expected_next_block, MOLD_ERROR_FLASH_WRITE_NEXT_BLOCK_FIND_NEXT_FREE_BLOCK_FAILED);
 }
 
 void flash_print_usage()
@@ -281,10 +235,7 @@ void flash_chip_erase()
 
     // check next_free_block_addr is found correctly
     flash_find_next_free_block();
-    if(next_free_block_addr != 0) {
-        raise_error(MOLD_ERROR_FLASH_FLASH_CHIP_ERASE_FIND_NEXT_FREE_BLOCK_FAILED);
-        reset();
-    }
+    MD_ASSERT(next_free_block_addr == 0, MOLD_ERROR_FLASH_FLASH_CHIP_ERASE_FIND_NEXT_FREE_BLOCK_FAILED);
 }
 
 void flash_init()

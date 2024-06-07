@@ -2,6 +2,13 @@
 
 #include <stdint.h>
 
+#define MD_ASSERT(cond, err)        \
+    do {                            \
+        if(!(cond)) {               \
+            raise_fatal_error(err); \
+        }                           \
+    } while(0)
+
 // There is one uint8_t for each error type in the atmega eeprom.
 // They contain the count for that specific error type.
 typedef enum _moldError {
@@ -46,6 +53,8 @@ typedef enum _moldError {
 } MoldError;
 
 void raise_error(MoldError error);
+// raise error and then reset the device
+void raise_fatal_error(MoldError error);
 
 void reset_errors();
 

@@ -10,9 +10,7 @@
 
 void parse_error_subcmd(char* arguments)
 {
-    if(!arguments) {
-        raise_error(MOLD_ERROR_INVALID_PARAMS_PARSE_ERROR_SUBCMD);
-    }
+    MD_ASSERT(arguments, MOLD_ERROR_INVALID_PARAMS_PARSE_ERROR_SUBCMD);
 
     null_terminate_after_first_word(&arguments);
     const char* sub_cmd = arguments;
@@ -41,9 +39,7 @@ void parse_error_subcmd(char* arguments)
 
 void parse_flash_subcmd(char* arguments)
 {
-    if(!arguments) {
-        raise_error(MOLD_ERROR_INVALID_PARAMS_PARSE_FLASH_SUBCMD);
-    }
+    MD_ASSERT(arguments, MOLD_ERROR_INVALID_PARAMS_PARSE_FLASH_SUBCMD);
 
     null_terminate_after_first_word(&arguments);
     const char* sub_cmd = arguments;
@@ -78,9 +74,7 @@ void parse_flash_subcmd(char* arguments)
 
 void parse_cmd(char* input_line)
 {
-    if(!input_line) {
-        raise_error(MOLD_ERROR_INVALID_PARAMS_PARSE_CMD);
-    }
+    MD_ASSERT(input_line, MOLD_ERROR_INVALID_PARAMS_PARSE_CMD);
 
     char*       arguments = null_terminate_after_first_word(&input_line);
     const char* cmd       = input_line;
@@ -131,10 +125,7 @@ void enter_terminal()
 
 char* null_terminate_after_first_word(char** line)
 {
-    if(!line || !*line) {
-        raise_error(MOLD_ERROR_INVALID_PARAMS_NULL_TERMINATE_AFTER_FIRST_WORD);
-        return "";
-    }
+    MD_ASSERT(line && *line, MOLD_ERROR_INVALID_PARAMS_NULL_TERMINATE_AFTER_FIRST_WORD);
 
     // ignore leading spaces
     while(**line == ' ')
