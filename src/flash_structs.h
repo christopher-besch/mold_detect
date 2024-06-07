@@ -2,9 +2,9 @@
 #include <avr/sfr_defs.h>
 
 // This implements a simple log-strucuted file system:
-// Every time a new block is written, the free flag is unset.
+// Every time a new block is written, the free flag of the block is unset.
 // The location of the next free block can then found by looking through the flash
-// and searching for the first free block (using a bianry search).
+// and searching for the first free block (using a binary search).
 // Only the entire chip gets ever erased.
 //
 // The flash is separated into pages of 256 bytes.
@@ -12,24 +12,28 @@
 // The flash storage is set to all 1 after being erased.
 // Therefore the free flag is set for all free blocks.
 #define FLASH_BLOCK_FLAG_FREE 0x80
-// #define FLASH_BLOCK_FLAG_RESERVED = 0x40
-// #define FLASH_BLOCK_FLAG_RESERVED = 0x20
-// #define FLASH_BLOCK_FLAG_RESERVED = 0x10
+// true iff the systems signals that the atmosphere is bad
+// (i.e. the atmosphere led is on)
+#define FLASH_BLOCK_FLAG_ATMOS_BAD 0x40
+// true iff there is at least one error set
+#define FLASH_BLOCK_FLAG_ERR_SET 0x20
+// #define FLASH_BLOCK_FLAG_RESERVED 0x10
 
 // There are a maximum of 8 different block types.
 #define FLASH_BLOCK_FLAG_TYPE 0x0f
+// values for FLASH_BLOCK_FLAG_TYPE in the flag byte of each block
+// needs to overlap with FLASH_BLOCK_FLAG_TYPE
+typedef enum _flashBlockType {
+    SENSOR_DATA_BLOCK = 0x0,
+    TIMESTAMP_BLOCK   = 0x1,
+} FlashBlockType;
 
 #define FLASH_BLOCK_SIZE      8
 #define FLASH_BLOCK_ADDR_MASK 0b111
 
+// this is the size of the W25Q128JVSIQ flash chip in bytes
 #define FLASH_SIZE       0x1000000
 #define FLASH_BLOCKS_NUM (FLASH_SIZE / FLASH_BLOCK_SIZE)
-
-// values for FLASH_BLOCK_FLAG_TYPE in the flag byte of each block
-typedef enum _flashBlockType {
-    SENSOR_DATA = 0x0,
-    TIMESTAMP   = 0x1,
-} FlashBlockType;
 
 // size of 8 bytes
 // -> 32 blocks per page

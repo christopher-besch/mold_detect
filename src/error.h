@@ -2,6 +2,8 @@
 
 #include <stdint.h>
 
+// There is one uint8_t for each error type in the atmega eeprom.
+// They contain the count for that specific error type.
 typedef enum _moldError {
     MOLD_ERROR_INVALID_ERROR                                                  = 0x00,
     MOLD_ERROR_FAILED_TO_RESET_ERROR_COUNTS                                   = 0x01,

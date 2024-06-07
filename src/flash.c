@@ -4,6 +4,7 @@
 #include "error.h"
 #include "flash.h"
 #include "interrupts.h"
+#include "measure.h"
 #include "spi.h"
 #include "uart.h"
 
@@ -15,8 +16,7 @@
 // 0x60 would also work
 #define FLASH_CHIP_ERASE 0xc7
 
-static uint32_t          next_free_block_addr = 0;
-static GenericFlashBlock free_check_flash_block;
+static uint32_t next_free_block_addr = 0;
 
 uint8_t flash_is_full()
 {
@@ -106,7 +106,7 @@ void flash_read_data(uint32_t address, void* buf, uint8_t nbytes)
 // The flash chip may not be in power down mode
 // more than 256 bytes (one page) can't be written with one write command
 //
-// excempt from data sheet p. 37:
+// excerpt from data sheet p. 37:
 //
 // "If an entire 256 byte page is to be programmed, the last address byte (the 8 least significant address bits)
 // should be set to 0. If the last address byte is not zero, and the number of clocks exceeds the remaining
@@ -171,7 +171,8 @@ void flash_write_block(uint32_t address, GenericFlashBlock* block)
     flash_write_data(address, &block, sizeof(GenericFlashBlock));
 }
 
-uint8_t is_block_free(uint32_t address)
+static GenericFlashBlock free_check_flash_block;
+uint8_t                  is_block_free(uint32_t address)
 {
     // address needs to start at a block
     if(address & FLASH_BLOCK_ADDR_MASK) {
@@ -186,6 +187,7 @@ uint8_t is_block_free(uint32_t address)
            FLASH_BLOCK_FLAG_FREE;
 }
 
+// Perform a binary search to find the first free block.
 void flash_find_next_free_block()
 {
     // adapted from: https://www.geeksforgeeks.org/implementing-upper_bound-and-lower_bound-in-c/
@@ -226,7 +228,8 @@ void flash_write_next_block(GenericFlashBlock* block)
     }
     flash_write_block(next_free_block_addr, block);
 
-    // check next_free_block_addr is found correctly
+    // Check next_free_block_addr is found correctly.
+    // The binary search is so fast we can effort this check.
     uint32_t expected_next_block = next_free_block_addr + FLASH_BLOCK_SIZE;
     flash_find_next_free_block();
     if(next_free_block_addr != expected_next_block) {
@@ -276,4 +279,29 @@ void flash_init()
 
     spi_controller_init();
     flash_find_next_free_block();
+}
+
+void set_block_flags(uint8_t* flags, FlashBlockType block_type)
+{
+    *flags = 0;
+    *flags |= 0 * FLASH_BLOCK_FLAG_FREE;
+    *flags |= is_atmosphere_bad() * FLASH_BLOCK_FLAG_ATMOS_BAD;
+    *flags |= in_error_state() * FLASH_BLOCK_FLAG_ERR_SET;
+    *flags |= block_type;
+}
+
+void create_flash_sensor_data(FlashSensorData* sensor_data_block, uint32_t temp, uint32_t hum, uint32_t temp_crc, uint32_t hum_crc)
+{
+    sensor_data_block->temperature     = temp;
+    sensor_data_block->humidity        = hum;
+    sensor_data_block->temperature_crc = temp_crc;
+    sensor_data_block->humidity_crc    = hum_crc;
+    sensor_data_block->padding[0]      = 0;
+    set_block_flags(&sensor_data_block->flags, SENSOR_DATA_BLOCK);
+}
+
+void create_flash_timestamp(FlashTimestamp* timestamp_block, uint64_t unix_second_timestamp)
+{
+    timestamp_block->unix_second_timestamp = unix_second_timestamp;
+    set_block_flags(&timestamp_block->flags, TIMESTAMP_BLOCK);
 }

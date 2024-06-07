@@ -1,4 +1,5 @@
 #include "i2c.h"
+#include "flash.h"
 
 #include <avr/io.h>
 #include <avr/sfr_defs.h>
@@ -127,11 +128,6 @@ int i2c_measure_temp_hum(FlashSensorData* sensor_data)
         return -1;
 
     // TODO: validate CRCs
-    sensor_data->temperature     = (uint16_t)temp1 << 8 | (uint16_t)temp0;
-    sensor_data->humidity        = (uint16_t)hum1 << 8 | (uint16_t)hum0;
-    sensor_data->temperature_crc = temp_crc;
-    sensor_data->humidity_crc    = hum_crc;
-    sensor_data->padding[0]      = 0;
-    sensor_data->flags           = 0;
+    create_flash_sensor_data(sensor_data, (uint16_t)temp1 << 8 | (uint16_t)temp0, (uint16_t)hum1 << 8 | (uint16_t)hum0, temp_crc, hum_crc);
     return 0;
 }
