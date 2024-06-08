@@ -15,4 +15,5 @@ void flash_print_usage();
 
 void flash_print_all_blocks();
 
-void flash_print_cur_timestampt();
+// print the timestamp of the last block
+void flash_print_cur_timestamp();

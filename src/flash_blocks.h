@@ -65,6 +65,7 @@ typedef struct __attribute__((packed)) _flashSensorData {
 // The user can update the current time via the USB terminal.
 // That creates an instance of this struct the offset to which is used to
 // determine the time a sensor data block has been created.
+// This works because every HEARTBEAT_SECS interval a new block is being stored.
 typedef struct __attribute__((packed)) _flashTimestamp {
     // we need to fit this struct into 8 bytes and the first 8 bits
     // of the time will be zero for the foreseeable future anyways

@@ -97,6 +97,7 @@ void set_timestamp(const char* raw_timestamp)
 
     static FlashTimestamp timestamp_block;
     flash_create_timestamp_block(&timestamp_block, timestamp);
+    // we could also use flash_print_cur_timestamp() but that might take a lot longer
     uart_print("current unix sec time: ");
     uart_print_uint64_t_hex(timestamp_block.unix_second_timestamp);
     uart_println("");
@@ -117,7 +118,7 @@ void parse_time_subcmd(char* arguments)
         return;
     }
     if(!strcmp(sub_cmd, "get")) {
-        flash_print_cur_timestampt();
+        flash_print_cur_timestamp();
         return;
     }
     if(!strcmp(sub_cmd, "help")) {

@@ -264,7 +264,7 @@ void flash_print_all_blocks()
     uart_println("]");
 }
 
-void flash_print_cur_timestampt()
+void flash_print_cur_timestamp()
 {
     uint64_t cur_timestamp = 0;
     for(uint32_t addr = 0; addr < next_free_block_addr; addr += FLASH_BLOCK_SIZE) {
