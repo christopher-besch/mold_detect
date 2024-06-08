@@ -12,8 +12,8 @@ void set_clock_speed()
 {
     // enable updating the clock speed
     CLKPR = 1 << CLKPCE;
-    // divide clock by 1
-    CLKPR = 0b000 << CLKPS0;
+    // divide clock by 2
+    CLKPR = 0b001 << CLKPS0;
 }
 
 int main(void)

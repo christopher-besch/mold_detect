@@ -1,7 +1,10 @@
 #include "flash.h"
 #include "error.h"
+#include "flash_blocks.h"
 #include "spi.h"
 #include "uart.h"
+
+#include <stdlib.h>
 
 // w25q128 instructions
 #define FLASH_PAGE_PROGRAM    0x02
@@ -190,7 +193,7 @@ void flash_write_next_block(GenericFlashBlock* block)
 {
     MD_ASSERT(block, MOLD_ERROR_INVALID_PARAMS_FLASH_WRITE_NEXT_BLOCK_BLOCK_IS_NULL);
     uart_println("writing block:");
-    uart_print_flash_block(block);
+    uart_print_flash_block(block, NULL);
     uart_println("");
 
     MD_ASSERT(!flash_is_full(), MOLD_ERROR_FLASH_WRITE_NEXT_BLOCK_FLASH_IS_FULL);
@@ -247,14 +250,31 @@ void flash_init()
 
 void flash_print_all_blocks()
 {
+    uint64_t cur_timestamp = 0;
     uart_println("[");
     for(uint32_t addr = 0; addr < next_free_block_addr; addr += FLASH_BLOCK_SIZE) {
         flash_read_block(addr, &block_buf);
-        uart_print_flash_block(&block_buf);
+        uart_print_flash_block(&block_buf, &cur_timestamp);
+        cur_timestamp += HEARTBEAT_SECS;
 
         // is this the last block?
         if(addr != next_free_block_addr)
             uart_println(",");
     }
     uart_println("]");
+}
+
+void flash_print_cur_timestampt()
+{
+    uint64_t cur_timestamp = 0;
+    for(uint32_t addr = 0; addr < next_free_block_addr; addr += FLASH_BLOCK_SIZE) {
+        flash_read_block(addr, &block_buf);
+        if(flash_get_block_type(block_buf.flags) == TIMESTAMP_BLOCK)
+            cur_timestamp = ((FlashTimestamp*)&block_buf)->unix_second_timestamp;
+        else
+            cur_timestamp += HEARTBEAT_SECS;
+    }
+    uart_print("Current unix sec time: ");
+    uart_print_uint64_t_hex(cur_timestamp);
+    uart_println("");
 }

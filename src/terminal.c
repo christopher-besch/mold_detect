@@ -1,10 +1,13 @@
 #include "terminal.h"
 #include "error.h"
 #include "flash.h"
+#include "flash_blocks.h"
 #include "interrupts.h"
 #include "measure.h"
 #include "uart.h"
 
+#include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
 
 void parse_error_subcmd(char* arguments)
@@ -71,6 +74,35 @@ void parse_flash_subcmd(char* arguments)
     uart_println("Try 'flash help' for a list of all commands.");
 }
 
+void set_timestamp(const char* raw_timestamp)
+{
+    MD_ASSERT(raw_timestamp, MD_ERROR_SET_TIMESTAMP_NULL);
+    uart_print("input: '");
+    uart_print(raw_timestamp);
+    uart_println("'");
+    if(strlen(raw_timestamp) == 0) {
+        uart_println("Error: No timestamp was provided.");
+        return;
+    }
+
+    char*    end_ptr;
+    uint64_t timestamp = strtoul(raw_timestamp, &end_ptr, 0);
+    uint8_t  len_read  = end_ptr - raw_timestamp;
+    if(len_read != strlen(raw_timestamp)) {
+        uart_print("Invalid char at pos: ");
+        uart_print_uint8_t_hex(len_read);
+        uart_println("");
+        return;
+    }
+
+    static FlashTimestamp timestamp_block;
+    flash_create_timestamp_block(&timestamp_block, timestamp);
+    uart_print("current unix sec time: ");
+    uart_print_uint64_t_hex(timestamp_block.unix_second_timestamp);
+    uart_println("");
+    // just try storing it; when it fails, it fails hard
+    flash_write_next_block((GenericFlashBlock*)&timestamp_block);
+}
 void parse_time_subcmd(char* arguments)
 {
     MD_ASSERT(arguments, MOLD_ERROR_INVALID_PARAMS_PARSE_TIME_SUBCMD);
@@ -81,12 +113,11 @@ void parse_time_subcmd(char* arguments)
     if(!strcmp(sub_cmd, "set")) {
         null_terminate_after_first_word(&sub_cmd_arguments);
         const char* new_time = sub_cmd_arguments;
-        // TODO: implement
-        uart_println(new_time);
+        set_timestamp(new_time);
         return;
     }
     if(!strcmp(sub_cmd, "get")) {
-        // TODO: implement
+        flash_print_cur_timestampt();
         return;
     }
     if(!strcmp(sub_cmd, "help")) {

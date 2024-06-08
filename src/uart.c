@@ -158,12 +158,18 @@ void uart_print_bool(uint8_t val)
     uart_print(val ? "true" : "false");
 }
 
-void flash_print_sensor_data_block(FlashSensorData* block)
+// expected_timestamp might be NULL
+void flash_print_sensor_data_block(FlashSensorData* block, uint64_t* expected_timestamp)
 {
     MD_ASSERT(block, MOLD_ERROR_FLASH_PRINT_SENSOR_DATA_BLOCK_NULL);
     uart_print("\"raw\":\"");
     uart_print_uint64_t_hex(*(uint64_t*)block);
     uart_print("\",\"type\":\"sensdat\"");
+    if(expected_timestamp) {
+        uart_print(",\"timestamp\":\"");
+        uart_print_uint64_t_hex(*expected_timestamp);
+        uart_print("\"");
+    }
     uart_print(",\"free\":");
     uart_print_bool(flash_is_block_free(block->flags));
     uart_print(",\"atmos_bad\":");
@@ -184,7 +190,8 @@ void flash_print_sensor_data_block(FlashSensorData* block)
     uart_print_uint16_t_hex(block->humidity_crc);
     uart_print("\"");
 }
-void flash_print_timestamp_block(FlashTimestamp* block)
+// expected_timestamp might be NULL
+void flash_print_timestamp_block(FlashTimestamp* block, uint64_t* expected_timestamp)
 {
     MD_ASSERT(block, MOLD_ERROR_FLASH_PRINT_TIMESTAMP_BLOCK_NULL);
     uart_print("\"raw\":\"");
@@ -199,18 +206,22 @@ void flash_print_timestamp_block(FlashTimestamp* block)
     uart_print(",\"timestamp\":\"");
     uart_print_uint64_t_hex(block->unix_second_timestamp);
     uart_print("\"");
+    // don't update NULL
+    if(expected_timestamp)
+        *expected_timestamp = block->unix_second_timestamp;
 }
-void uart_print_flash_block(GenericFlashBlock* block)
+// expected_timestamp might be NULL
+void uart_print_flash_block(GenericFlashBlock* block, uint64_t* expected_timestamp)
 {
     MD_ASSERT(block, MOLD_ERROR_UART_PRINT_FLASH_BLOCK_NULL);
 
     uart_print("{");
     switch(flash_get_block_type(block->flags)) {
     case SENSOR_DATA_BLOCK:
-        flash_print_sensor_data_block((FlashSensorData*)block);
+        flash_print_sensor_data_block((FlashSensorData*)block, expected_timestamp);
         break;
     case TIMESTAMP_BLOCK:
-        flash_print_timestamp_block((FlashTimestamp*)block);
+        flash_print_timestamp_block((FlashTimestamp*)block, expected_timestamp);
         break;
     default:
         raise_fatal_error(MOLD_ERROR_UART_PRINT_FLASH_BLOCK_INVALID_TYPE);
@@ -230,6 +241,7 @@ void print_kit_logo()
     // loop over run length encoding
     for(uint8_t i = 0; i < sizeof(kit_logo_run_length_encoding); ++i) {
         for(uint8_t j = 0; j < kit_logo_run_length_encoding[i]; ++j) {
+            // make sure we add the correct line breaks
             if(cur_pos_in_line == kit_logo_width) {
                 uart_print("\r\n    ");
                 cur_pos_in_line = 0;

@@ -14,3 +14,5 @@ void flash_chip_erase();
 void flash_print_usage();
 
 void flash_print_all_blocks();
+
+void flash_print_cur_timestampt();

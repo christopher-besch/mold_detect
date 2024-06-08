@@ -1,10 +1,11 @@
 DEVICE                 = atmega328p
-# 16MHz clock divided by 1 at boot up using CLKPS
+# 16MHz clock divided by 2 at boot up using CLKPS
 # until then the clock runs at 2MHz using the div 8 clock prescaler fuse
-CLOCK                  = 16000000
-BAUD                   = 115200
+CLOCK                  = 8000000
+BAUD                   = 57600
 MOLD_DETECT_VERSION    = \"0.1.0\"
 COMMIT_HASH            = \"$(shell git rev-parse HEAD)\"
+HEARTBEAT_SECS         = 60
 # using dw-link
 PROGRAMMER = -c stk500v1 -P /dev/ttyACM0
 # using avrispmkII
@@ -29,7 +30,7 @@ FLOAT_PRINTF_LINK_SETTINGS = -Wl,-u,vfprintf -lprintf_flt -lm
 # -> 2MHz Clock
 FUSES      = -U hfuse:w:0xd1:m -U lfuse:w:0x6f:m
 AVRDUDE    = avrdude $(PROGRAMMER) -p $(DEVICE)
-COMPILE    = avr-gcc -Wall -g -Og -DF_CPU=$(CLOCK) -DBAUD=$(BAUD) -DMOLD_DETECT_VERSION=$(MOLD_DETECT_VERSION) -DCOMMIT_HASH=$(COMMIT_HASH) -mmcu=$(DEVICE) $(FLOAT_PRINTF_LINK_SETTINGS)
+COMPILE    = avr-gcc -Wall -g -Og -DF_CPU=$(CLOCK) -DBAUD=$(BAUD) -DMOLD_DETECT_VERSION=$(MOLD_DETECT_VERSION) -DCOMMIT_HASH=$(COMMIT_HASH) -DHEARTBEAT_SECS=$(HEARTBEAT_SECS) -mmcu=$(DEVICE) $(FLOAT_PRINTF_LINK_SETTINGS)
 
 .PHONY: all install flash fuse clean
 

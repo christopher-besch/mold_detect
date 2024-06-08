@@ -1,4 +1,5 @@
 #include "measure.h"
+#include "error.h"
 #include "flash.h"
 #include "i2c.h"
 #include "led.h"
@@ -12,9 +13,8 @@ void perform_measurement()
     // TODO: remove debug led here
     set_atmosphere_led(1);
 
-    FlashSensorData sensor_data;
-    if(i2c_measure_temp_hum(&sensor_data))
-        uart_println("Measurement failed!");
+    static FlashSensorData sensor_data;
+    MD_ASSERT(!i2c_measure_temp_hum(&sensor_data), MOLD_ERROR_PERFORM_MEASUREMENT_FAILED);
 
     if(!flash_is_full())
         flash_write_next_block((GenericFlashBlock*)&sensor_data);
