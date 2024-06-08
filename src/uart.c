@@ -13,6 +13,12 @@
 static char cmd_buf[MAX_CMD_LENGTH];
 static char utoa_buf[5];
 
+// use kit_logo_encoding.py to calculate
+static const uint8_t kit_logo_run_length_encoding[] = {16, 5, 8, 7, 2, 6, 1, 14, 10, 3, 4, 4, 6, 7, 4, 6, 1, 14, 9, 5, 3, 4, 4, 8, 5, 6, 5, 6, 14, 5, 3, 3, 3, 7, 7, 6, 5, 6, 8, 3, 5, 4, 2, 3, 2, 6, 9, 6, 5, 6, 7, 6, 4, 4, 2, 2, 2, 6, 9, 6, 5, 6, 8, 8, 3, 3, 1, 2, 2, 7, 8, 6, 5, 6, 13, 5, 3, 2, 1, 1, 4, 7, 6, 6, 5, 6, 5, 4, 8, 3, 2, 1, 1, 1, 6, 7, 4, 6, 5, 6, 4, 13, 4, 2, 10, 6, 3, 6, 5, 6, 4, 21, 9, 7, 1, 6, 5, 6, 4};
+static const uint8_t kit_logo_width                 = 59;
+static const char    kit_logo_first_char            = ' ';
+static const char    kit_logo_other_char            = '#';
+
 void uart_init()
 {
     // do a make clean then make all to use an updated F_CPU or BAUD value
@@ -210,4 +216,32 @@ void uart_print_flash_block(GenericFlashBlock* block)
         raise_fatal_error(MOLD_ERROR_UART_PRINT_FLASH_BLOCK_INVALID_TYPE);
     }
     uart_print("}");
+}
+
+void print_kit_logo()
+{
+    char     cur_char        = kit_logo_first_char;
+    uint16_t cur_pos_in_line = 0;
+    uart_println("");
+    uart_println("");
+    uart_println("");
+    uart_println("");
+    uart_print("    ");
+    // loop over run length encoding
+    for(uint8_t i = 0; i < sizeof(kit_logo_run_length_encoding); ++i) {
+        for(uint8_t j = 0; j < kit_logo_run_length_encoding[i]; ++j) {
+            if(cur_pos_in_line == kit_logo_width) {
+                uart_print("\r\n    ");
+                cur_pos_in_line = 0;
+            }
+            uart_trans(cur_char);
+            ++cur_pos_in_line;
+        }
+        // go to other char
+        cur_char = cur_char == kit_logo_first_char ? kit_logo_other_char : kit_logo_first_char;
+    }
+    uart_println("");
+    uart_println("");
+    uart_println("");
+    uart_println("");
 }

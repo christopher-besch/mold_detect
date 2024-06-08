@@ -33,7 +33,7 @@ void parse_error_subcmd(char* arguments)
     uart_print("Unknown error subcommand: '");
     uart_print(sub_cmd);
     uart_println("'");
-    uart_println("Try error help for a list of all commands.");
+    uart_println("Try 'error help' for a list of all commands.");
 }
 
 void parse_flash_subcmd(char* arguments)
@@ -68,7 +68,35 @@ void parse_flash_subcmd(char* arguments)
     uart_print("Unknown flash subcommand: '");
     uart_print(sub_cmd);
     uart_println("'");
-    uart_println("Try flash help for a list of all commands.");
+    uart_println("Try 'flash help' for a list of all commands.");
+}
+
+void parse_time_subcmd(char* arguments)
+{
+    MD_ASSERT(arguments, MOLD_ERROR_INVALID_PARAMS_PARSE_TIME_SUBCMD);
+
+    char*       sub_cmd_arguments = null_terminate_after_first_word(&arguments);
+    const char* sub_cmd           = arguments;
+
+    if(!strcmp(sub_cmd, "set")) {
+        null_terminate_after_first_word(&sub_cmd_arguments);
+        const char* new_time = sub_cmd_arguments;
+        // TODO: implement
+        uart_println(new_time);
+        return;
+    }
+    if(!strcmp(sub_cmd, "get")) {
+        // TODO: implement
+        return;
+    }
+    if(!strcmp(sub_cmd, "help")) {
+        uart_println("The possible subcommands are: set, get, help");
+        return;
+    }
+    uart_print("Unknown time subcommand: '");
+    uart_print(sub_cmd);
+    uart_println("'");
+    uart_println("Try 'time help' for a list of all commands.");
 }
 
 void parse_cmd(char* input_line)
@@ -97,15 +125,22 @@ void parse_cmd(char* input_line)
         perform_measurement();
         return;
     }
-    if(!strcmp(cmd, "help")) {
-        uart_println("This is the help page. The possible commands are: reset, measure, help, error, flash");
+    if(!strcmp(cmd, "version")) {
+        print_version();
         return;
     }
-    // TODO: version, time
+    if(!strcmp(cmd, "time")) {
+        parse_time_subcmd(arguments);
+        return;
+    }
+    if(!strcmp(cmd, "help")) {
+        uart_println("This is the help page. The possible commands are: reset, measure, help, error, flash, version, time");
+        return;
+    }
     uart_print("Unknown command: '");
     uart_print(cmd);
     uart_println("'");
-    uart_println("Try help for a list of all commands.");
+    uart_println("Try 'help' for a list of all commands.");
 }
 
 // This function never returns.
@@ -148,4 +183,14 @@ char* null_terminate_after_first_word(char** line)
         ++my_line;
     }
     return my_line;
+}
+
+void print_version()
+{
+    uart_print("mold_detect (github.com/christopher-besch/mold_detect)\r\nversion: ");
+    uart_print(MOLD_DETECT_VERSION);
+    uart_print(" commit: ");
+    uart_println(COMMIT_HASH);
+    uart_println("Developed by Christopher Besch\r\nat the Chair for Embedded System at the Karlsruher Institut für Technologie");
+    print_kit_logo();
 }

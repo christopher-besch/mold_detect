@@ -22,3 +22,4 @@ void uart_print_uint64_t_hex(uint64_t val);
 void uart_print_float(float val);
 void uart_print_bool(uint8_t val);
 void uart_print_flash_block(GenericFlashBlock* block);
+void print_kit_logo();

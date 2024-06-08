@@ -30,10 +30,7 @@ int main(void)
     set_atmosphere_led(1);
     uart_println("");
     uart_println("mold_detect booting up");
-    uart_print("mold_detect (github.com/christopher-besch/mold_detect)\r\nversion: ");
-    uart_println(MOLD_DETECT_VERSION);
-    uart_println(COMMIT_HASH);
-    uart_println("Developed by Christopher Besch\r\nat the Chair for Embedded System at the KIT");
+    print_version();
     _delay_ms(50);
     set_atmosphere_led(0);
 

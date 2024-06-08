@@ -46,6 +46,7 @@ typedef enum _moldError {
     MOLD_ERROR_UART_PRINT_FLASH_BLOCK_INVALID_TYPE                             = 0x23,
     MOLD_ERROR_FLASH_GET_BLOCK_TYPE_INVALID_TYPE                               = 0x24,
     MOLD_ERROR_FLASH_PRINT_SENSOR_DATA_BLOCK_NULL                              = 0x25,
+    MOLD_ERROR_INVALID_PARAMS_PARSE_TIME_SUBCMD                                = 0x26,
 
     MOLD_ERROR_TEST,
 

@@ -7,3 +7,5 @@ void enter_terminal();
 // the char* will be moved forward to skip all leading spaces
 // returns pointer to part after space
 char* null_terminate_after_first_word(char** line);
+
+void print_version();

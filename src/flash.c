@@ -184,7 +184,6 @@ void flash_find_next_free_block()
 
     next_free_block_addr = low * FLASH_BLOCK_SIZE;
     flash_check_correct_free_block_addr();
-    flash_print_usage();
 }
 
 void flash_write_next_block(GenericFlashBlock* block)
