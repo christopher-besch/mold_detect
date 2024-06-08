@@ -7,6 +7,7 @@
 #include <util/delay.h>
 
 static uint8_t atmosphere_bad = 0;
+#define MEASURE_ATTEMPTS 20
 
 void measure_perform_measurement()
 {
@@ -14,7 +15,16 @@ void measure_perform_measurement()
     set_atmosphere_led(1);
 
     static FlashSensorData sensor_data;
-    MD_ASSERT(!i2c_measure_temp_hum(&sensor_data), MOLD_ERROR_PERFORM_MEASUREMENT_FAILED);
+    // perform multiple attempts for roughly half a minute
+    uint8_t ok = 0;
+    for(uint8_t i = 0; i < MEASURE_ATTEMPTS; ++i) {
+        if(!i2c_measure_temp_hum(&sensor_data)) {
+            ok = 1;
+            break;
+        }
+        _delay_ms(1000);
+    }
+    MD_ASSERT(ok, MOLD_ERROR_PERFORM_MEASUREMENT_FAILED);
 
     if(!flash_is_full())
         flash_write_next_block((GenericFlashBlock*)&sensor_data);
