@@ -1,6 +1,7 @@
 #include "flash.h"
 #include "error.h"
 #include "flash_blocks.h"
+#include "print.h"
 #include "spi.h"
 #include "uart.h"
 

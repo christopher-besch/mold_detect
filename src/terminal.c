@@ -4,6 +4,7 @@
 #include "flash_blocks.h"
 #include "interrupts.h"
 #include "measure.h"
+#include "print.h"
 #include "uart.h"
 
 #include <stdint.h>

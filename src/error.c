@@ -1,6 +1,7 @@
 #include "error.h"
 #include "interrupts.h"
 #include "led.h"
+#include "print.h"
 #include "uart.h"
 
 #include <avr/eeprom.h>
