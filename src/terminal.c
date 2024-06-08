@@ -10,6 +10,38 @@
 #include <stdlib.h>
 #include <string.h>
 
+// finds the first space and replaces it with a null terminator
+// (excluding the ones before the first word)
+// the char* will be moved forward to skip all leading spaces
+// returns pointer to part after space
+char* null_terminate_after_first_word(char** line)
+{
+    MD_ASSERT(line && *line, MOLD_ERROR_INVALID_PARAMS_NULL_TERMINATE_AFTER_FIRST_WORD);
+
+    // ignore leading spaces
+    while(**line == ' ')
+        ++*line;
+
+    // now find the first space
+    char* my_line = *line;
+    // return a pointer to NULL when there is no second word
+    while(*my_line) {
+        if(*my_line == ' ') {
+            // replace first space with null terminator
+            *my_line = 0;
+            // skip all following spaces
+            ++my_line;
+            while(*my_line == ' ')
+                ++my_line;
+            // return pointer to first char after spaces
+            // this might be the null terminator of the input string
+            return my_line;
+        }
+        ++my_line;
+    }
+    return my_line;
+}
+
 void parse_error_subcmd(char* arguments)
 {
     MD_ASSERT(arguments, MOLD_ERROR_INVALID_PARAMS_PARSE_ERROR_SUBCMD);
@@ -154,7 +186,7 @@ void parse_cmd(char* input_line)
         return;
     }
     if(!strcmp(cmd, "measure")) {
-        perform_measurement();
+        measure_perform_measurement();
         return;
     }
     if(!strcmp(cmd, "version")) {
@@ -189,34 +221,6 @@ void enter_terminal()
     }
 }
 
-char* null_terminate_after_first_word(char** line)
-{
-    MD_ASSERT(line && *line, MOLD_ERROR_INVALID_PARAMS_NULL_TERMINATE_AFTER_FIRST_WORD);
-
-    // ignore leading spaces
-    while(**line == ' ')
-        ++*line;
-
-    // now find the first space
-    char* my_line = *line;
-    // return a pointer to NULL when there is no second word
-    while(*my_line) {
-        if(*my_line == ' ') {
-            // replace first space with null terminator
-            *my_line = 0;
-            // skip all following spaces
-            ++my_line;
-            while(*my_line == ' ')
-                ++my_line;
-            // return pointer to first char after spaces
-            // this might be the null terminator of the input string
-            return my_line;
-        }
-        ++my_line;
-    }
-    return my_line;
-}
-
 void print_version()
 {
     uart_print("mold_detect (github.com/christopher-besch/mold_detect)\r\nversion: ");
@@ -224,5 +228,5 @@ void print_version()
     uart_print(" commit: ");
     uart_println(COMMIT_HASH);
     uart_println("Developed by Christopher Besch\r\nat the Chair for Embedded System at the Karlsruher Institut für Technologie");
-    print_kit_logo();
+    uart_print_kit_logo();
 }

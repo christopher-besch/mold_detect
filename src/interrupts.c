@@ -118,7 +118,7 @@ ISR(PCINT2_vect)
     // ignore wake pin falling edge
     if(WD_WAKE_PIN & (1 << WD_WAKE_PIN_NR)) {
         if(should_measure)
-            perform_measurement();
+            measure_perform_measurement();
         // always respond to the watchdog
         respond_watch_dog();
     }

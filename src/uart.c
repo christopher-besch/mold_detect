@@ -177,9 +177,9 @@ void flash_print_sensor_data_block(FlashSensorData* block, uint64_t* expected_ti
     uart_print(",\"err_set\":");
     uart_print_bool(flash_is_block_err_set(block->flags));
     uart_print(",\"temp\":");
-    uart_print_float(convert_temp_c(block->temperature));
+    uart_print_float(measure_convert_temp_c(block->temperature));
     uart_print(",\"hum\":");
-    uart_print_float(convert_rel_hum(block->humidity));
+    uart_print_float(measure_convert_rel_hum(block->humidity));
     uart_print(",\"traw\":\"");
     uart_print_uint16_t_hex(block->temperature);
     uart_print("\",\"traw\":\"");
@@ -229,7 +229,7 @@ void uart_print_flash_block(GenericFlashBlock* block, uint64_t* expected_timesta
     uart_print("}");
 }
 
-void print_kit_logo()
+void uart_print_kit_logo()
 {
     char     cur_char        = kit_logo_first_char;
     uint16_t cur_pos_in_line = 0;

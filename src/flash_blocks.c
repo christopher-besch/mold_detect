@@ -36,7 +36,7 @@ void flash_set_block_flags(uint8_t* flags, FlashBlockType block_type)
     MD_ASSERT(flags, MOLD_ERROR_FLASH_SET_BLOCK_FLAGS_NULL);
     *flags = 0;
     *flags |= 0 * FLASH_BLOCK_FLAG_FREE;
-    *flags |= is_atmosphere_bad() * FLASH_BLOCK_FLAG_ATMOS_BAD;
+    *flags |= measure_is_atmosphere_bad() * FLASH_BLOCK_FLAG_ATMOS_BAD;
     *flags |= in_error_state() * FLASH_BLOCK_FLAG_ERR_SET;
     *flags |= block_type;
 }

@@ -8,7 +8,7 @@
 
 static uint8_t atmosphere_bad = 0;
 
-void perform_measurement()
+void measure_perform_measurement()
 {
     // TODO: remove debug led here
     set_atmosphere_led(1);
@@ -24,17 +24,17 @@ void perform_measurement()
     set_atmosphere_led(atmosphere_bad);
 }
 
-int is_atmosphere_bad()
+int measure_is_atmosphere_bad()
 {
     return atmosphere_bad;
 }
 
-float convert_temp_c(uint16_t raw)
+float measure_convert_temp_c(uint16_t raw)
 {
     // -45 + 175 * raw / (2**16-1)
     return -45.0f + 0.002670328831921874f * (float)raw;
 }
-float convert_rel_hum(uint16_t raw)
+float measure_convert_rel_hum(uint16_t raw)
 {
     // 100 * raw / (2**16-1)
     return 0.0015259021896696422f * (float)raw;

@@ -3,7 +3,7 @@
 #include "flash_blocks.h"
 #include <avr/sfr_defs.h>
 
-#define MAX_CMD_LENGTH (uint8_t)120
+#define MAX_CMD_LENGTH (uint8_t)80
 
 void          uart_init();
 void          uart_trans(unsigned char data);
@@ -25,4 +25,4 @@ void uart_print_bool(uint8_t val);
 // It will be updated if this is a timestampt block.
 // If expected_timestamp is NULL it won't be updated and not displayed either.
 void uart_print_flash_block(GenericFlashBlock* block, uint64_t* expected_timestamp);
-void print_kit_logo();
+void uart_print_kit_logo();
