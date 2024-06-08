@@ -1,4 +1,5 @@
 #include <avr/interrupt.h>
+#include <avr/io.h>
 #include <util/delay.h>
 
 #include "flash.h"
@@ -7,8 +8,18 @@
 #include "terminal.h"
 #include "uart.h"
 
+void set_clock_speed()
+{
+    // enable updating the clock speed
+    CLKPR = 1 << CLKPCE;
+    // divide clock by 1
+    CLKPR = 0b000 << CLKPS0;
+}
+
 int main(void)
 {
+    set_clock_speed();
+
     // init //
     uart_init();
     // this should go as one of the first as the avr wdt might still be enabled

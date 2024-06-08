@@ -1,8 +1,5 @@
-#include <avr/io.h>
-#include <util/delay.h>
-
-#include "error.h"
 #include "flash.h"
+#include "error.h"
 #include "spi.h"
 #include "uart.h"
 
@@ -193,7 +190,7 @@ void flash_find_next_free_block()
 void flash_write_next_block(GenericFlashBlock* block)
 {
     MD_ASSERT(block, MOLD_ERROR_INVALID_PARAMS_FLASH_WRITE_NEXT_BLOCK_BLOCK_IS_NULL);
-    uart_println("attempting to write block:");
+    uart_println("writing block:");
     uart_print_flash_block(block);
     uart_println("");
 

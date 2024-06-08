@@ -5,6 +5,8 @@
 
 void flash_init();
 
+uint8_t flash_is_full();
+
 void flash_write_next_block(GenericFlashBlock* block);
 
 void flash_chip_erase();
