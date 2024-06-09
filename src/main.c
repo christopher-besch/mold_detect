@@ -50,11 +50,12 @@ int main(void)
     set_clock_speed();
 
     // init //
+    // the order here is very important as some subsystems rely on others to be initialized
     uart_init();
     // this should go as one of the first as the avr wdt might still be enabled
     interrupt_init();
-    flash_init();
     led_init();
+    flash_init();
     i2c_init();
 
     set_atmosphere_led(1);

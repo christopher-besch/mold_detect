@@ -1,4 +1,5 @@
 #include "interrupts.h"
+#include "flash.h"
 #include "led.h"
 #include "measure.h"
 #include "uart.h"
@@ -88,6 +89,8 @@ void start_measurement_sleep_cycle()
 {
     enable_measurements();
 
+    // power everything down
+    flash_power_down();
     set_sleep_mode(SLEEP_MODE_PWR_DOWN);
     sleep_enable();
     while(1) {
@@ -117,8 +120,11 @@ ISR(PCINT2_vect)
     // is wake pin high; so wake-up has been sent
     // ignore wake pin falling edge
     if(WD_WAKE_PIN & (1 << WD_WAKE_PIN_NR)) {
-        if(should_measure)
+        if(should_measure) {
+            flash_power_up();
             measure_perform_measurement();
+            flash_power_down();
+        }
         // always respond to the watchdog
         respond_watch_dog();
     }

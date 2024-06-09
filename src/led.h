@@ -13,3 +13,6 @@ void set_atmosphere_led(uint8_t state);
 
 // using LED Green1
 void set_usb_led(uint8_t state);
+
+// using LED Red1
+void set_general_led(uint8_t state);

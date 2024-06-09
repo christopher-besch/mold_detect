@@ -7,6 +7,8 @@ CRYSTAL_CLOCK          = 16000000
 CLOCK                  = 16000000
 BAUD                   = 115200
 I2C_CLOCK              = 100000
+# We don't need to worry about the flash clock speed.
+# The w25q128 clocks up to 133MHz.
 MOLD_DETECT_VERSION    = \"0.1.0\"
 COMMIT_HASH            = \"$(shell git rev-parse HEAD)\"
 HEARTBEAT_SECS         = 60

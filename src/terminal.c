@@ -97,8 +97,16 @@ void parse_flash_subcmd(char* arguments)
         flash_print_all_blocks();
         return;
     }
+    if(!strcmp(sub_cmd, "down")) {
+        flash_power_down();
+        return;
+    }
+    if(!strcmp(sub_cmd, "up")) {
+        flash_power_up();
+        return;
+    }
     if(!strcmp(sub_cmd, "help")) {
-        uart_println("The possible subcommands are: erase, usage, print, help");
+        uart_println("The possible subcommands are: erase, usage, print, help, down, up");
         return;
     }
     uart_print("Unknown flash subcommand: '");

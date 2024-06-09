@@ -1,11 +1,13 @@
 #include "flash.h"
 #include "error.h"
 #include "flash_blocks.h"
+#include "led.h"
 #include "print.h"
 #include "spi.h"
 #include "uart.h"
 
 #include <stdlib.h>
+#include <util/delay.h>
 
 // w25q128 instructions
 #define FLASH_PAGE_PROGRAM    0x02
@@ -14,6 +16,12 @@
 #define FLASH_WRITE_ENABLE    0x06
 // 0x60 would also work
 #define FLASH_CHIP_ERASE 0xc7
+#define FLASH_POWER_DOWN 0xb9
+#define FLASH_POWER_DOWN 0xb9
+#define FLASH_POWER_UP   0xab
+
+#define FLASH_POWER_DOWN_DELAY_US 3
+#define FLASH_POWER_UP_DELAY_US   3
 
 static uint32_t          next_free_block_addr = 0;
 static GenericFlashBlock block_buf;
@@ -246,6 +254,7 @@ void flash_init()
         return;
 
     spi_controller_init();
+    flash_power_up();
     flash_find_next_free_block();
 }
 
@@ -278,4 +287,25 @@ void flash_print_cur_timestamp()
     uart_print("Current unix sec time: ");
     uart_print_uint64_t_hex(cur_timestamp);
     uart_println("");
+}
+
+void flash_power_down()
+{
+    uart_println("flash power down");
+    spi_start();
+    spi_transceive_char(FLASH_POWER_DOWN);
+    spi_end();
+    // wait as described in w25q128 data sheet 9.6 (p.66)
+    _delay_us(FLASH_POWER_DOWN_DELAY_US);
+    set_general_led(0);
+}
+void flash_power_up()
+{
+    uart_println("flash power up");
+    spi_start();
+    spi_transceive_char(FLASH_POWER_UP);
+    spi_end();
+    // wait as described in w25q128 data sheet 9.6 (p.66)
+    _delay_us(FLASH_POWER_UP_DELAY_US);
+    set_general_led(1);
 }

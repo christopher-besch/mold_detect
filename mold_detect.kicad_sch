@@ -6330,7 +6330,7 @@
 		)
 		(uuid "f30090ac-6ddf-473d-8380-ad7dee59a9e1")
 	)
-	(global_label "HUM_LED"
+	(global_label "LED_BLUE1"
 		(shape input)
 		(at 30.48 118.11 180)
 		(fields_autoplaced yes)
@@ -6352,7 +6352,7 @@
 			)
 		)
 	)
-	(global_label "TEMP_LED"
+	(global_label "LED_RED2"
 		(shape input)
 		(at 30.48 120.65 180)
 		(fields_autoplaced yes)
@@ -6550,7 +6550,7 @@
 			)
 		)
 	)
-	(global_label "ERROR_LED"
+	(global_label "LED_RED1"
 		(shape input)
 		(at 219.71 100.33 0)
 		(fields_autoplaced yes)
@@ -6682,7 +6682,7 @@
 			)
 		)
 	)
-	(global_label "GENERAL_LED"
+	(global_label "LED_GREEN1"
 		(shape input)
 		(at 30.48 125.73 180)
 		(fields_autoplaced yes)
@@ -6704,7 +6704,7 @@
 			)
 		)
 	)
-	(global_label "GENERAL_LED"
+	(global_label "LED_GREEN1"
 		(shape input)
 		(at 219.71 95.25 0)
 		(fields_autoplaced yes)
@@ -6858,7 +6858,7 @@
 			)
 		)
 	)
-	(global_label "ERROR_LED"
+	(global_label "LED_RED1"
 		(shape input)
 		(at 30.48 123.19 180)
 		(fields_autoplaced yes)
@@ -6990,7 +6990,7 @@
 			)
 		)
 	)
-	(global_label "HUM_LED"
+	(global_label "LED_BLUE1"
 		(shape input)
 		(at 219.71 97.79 0)
 		(fields_autoplaced yes)
@@ -7034,7 +7034,7 @@
 			)
 		)
 	)
-	(global_label "TEMP_LED"
+	(global_label "LED_RED2"
 		(shape input)
 		(at 219.71 87.63 0)
 		(fields_autoplaced yes)
