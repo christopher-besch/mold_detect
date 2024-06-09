@@ -127,11 +127,11 @@ void flash_print_timestamp_block(FlashTimestamp* block, uint64_t* expected_times
     uart_print("\"raw\":\"");
     uart_print_uint64_t_hex(*(uint64_t*)block);
     uart_print("\",\"type\":\"tmstmp\"");
-    uart_print(",\"is_free\":");
+    uart_print(",\"free\":");
     uart_print_bool(flash_is_block_free(block->flags));
-    uart_print(",\"is_atmos_bad\":");
+    uart_print(",\"atmos_bad\":");
     uart_print_bool(flash_is_block_atmos_bad(block->flags));
-    uart_print(",\"is_err_set\":");
+    uart_print(",\"err_set\":");
     uart_print_bool(flash_is_block_err_set(block->flags));
     uart_print(",\"timestamp\":\"");
     uart_print_uint64_t_hex(block->unix_second_timestamp);

@@ -50,6 +50,26 @@ typedef enum _moldError {
     MOLD_ERROR_PERFORM_MEASUREMENT_FAILED                                      = 0x27,
     MD_ERROR_SET_TIMESTAMP_NULL                                                = 0x28,
 
+    MD_ERROR_TEST_00 = 0x30,
+    MD_ERROR_TEST_01 = 0x31,
+    MD_ERROR_TEST_02 = 0x32,
+    MD_ERROR_TEST_03 = 0x33,
+    MD_ERROR_TEST_04 = 0x34,
+    MD_ERROR_TEST_05 = 0x35,
+    MD_ERROR_TEST_06 = 0x36,
+    MD_ERROR_TEST_07 = 0x37,
+    MD_ERROR_TEST_08 = 0x38,
+    MD_ERROR_TEST_09 = 0x39,
+    MD_ERROR_TEST_0A = 0x3a,
+    MD_ERROR_TEST_0B = 0x3b,
+    MD_ERROR_TEST_0C = 0x3c,
+    MD_ERROR_TEST_0D = 0x3d,
+    MD_ERROR_TEST_0E = 0x3e,
+    MD_ERROR_TEST_0F = 0x3f,
+    MD_ERROR_TEST_10 = 0x40,
+    MD_ERROR_TEST_11 = 0x41,
+    MD_ERROR_TEST_12 = 0x42,
+
     MOLD_ERROR_TEST,
 
     // how many errors are there?

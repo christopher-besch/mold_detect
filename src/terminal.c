@@ -228,6 +228,6 @@ void print_version()
     uart_print(MOLD_DETECT_VERSION);
     uart_print(" commit: ");
     uart_println(COMMIT_HASH);
-    uart_println("Developed by Christopher Besch\r\nat the Chair for Embedded System at the Karlsruher Institut für Technologie");
+    uart_println("Developed by Christopher Besch\r\nat the Chair for Embedded Systems at the Karlsruher Institut für Technologie");
     uart_print_kit_logo();
 }

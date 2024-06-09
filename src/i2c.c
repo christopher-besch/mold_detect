@@ -1,5 +1,5 @@
 #include "i2c.h"
-#include "flash.h"
+#include "error.h"
 
 #include <avr/io.h>
 #include <avr/sfr_defs.h>
@@ -24,6 +24,13 @@
 // minimal waiting time
 #define SCL_FREE 1
 
+void i2c_init()
+{
+    TWBR = I2C_CLOCK_DIV;
+    // the prescalar could be used to achieve even lower i2c clock speeds;
+    TWSR = 0;
+}
+
 void await_transmission_conclusion()
 {
     while(!(TWCR & (1 << TWINT)))
@@ -42,8 +49,10 @@ int i2c_start()
     TWCR = (1 << TWINT) | (1 << TWSTA) | (1 << TWEN);
 
     await_transmission_conclusion();
-    if(!check_status(START))
+    if(!check_status(START)) {
+        raise_error(MD_ERROR_TEST_00);
         return -1;
+    }
     return 0;
 }
 
@@ -64,8 +73,10 @@ int i2c_send(uint8_t data, uint8_t expected_status)
     TWDR = data;
     TWCR = (1 << TWINT) | (1 << TWEN);
     await_transmission_conclusion();
-    if(!check_status(expected_status))
+    if(!check_status(expected_status)) {
+        raise_error(MD_ERROR_TEST_01);
         return -1;
+    }
     return 0;
 }
 
@@ -77,57 +88,99 @@ int i2c_receive(uint8_t* data)
 {
     TWCR = (1 << TWINT) | (1 << TWEA) | (1 << TWEN);
     await_transmission_conclusion();
-    if(!check_status(DATA_REC_ACK))
+    if(!check_status(DATA_REC_ACK)) {
+        raise_error(MD_ERROR_TEST_02);
         return -1;
+    }
     *data = TWDR;
     return 0;
 }
 
-int i2c_measure_temp_hum(FlashSensorData* sensor_data)
+int i2c_attempt_read_sensor(FlashSensorData* sensor_data)
 {
     // send measurement request //
-    if(i2c_start())
+    if(i2c_start()) {
+        raise_error(MD_ERROR_TEST_03);
         return -1;
+    }
     // send address in controller write mode
-    if(i2c_send(SHT30_ADDR_W, ADR_W_ACK))
+    if(i2c_send(SHT30_ADDR_W, ADR_W_ACK)) {
+        raise_error(MD_ERROR_TEST_04);
         return -1;
+    }
     // send command MSB
-    if(i2c_send(HIGH_REP_CLK_STRETCH1, DATA_TRANS_ACK))
+    if(i2c_send(HIGH_REP_CLK_STRETCH1, DATA_TRANS_ACK)) {
+        raise_error(MD_ERROR_TEST_05);
         return -1;
+    }
     // send command LSB
-    if(i2c_send(HIGH_REP_CLK_STRETCH0, DATA_TRANS_ACK))
+    if(i2c_send(HIGH_REP_CLK_STRETCH0, DATA_TRANS_ACK)) {
+        raise_error(MD_ERROR_TEST_06);
         return -1;
-    if(i2c_stop())
+    }
+    if(i2c_stop()) {
+        raise_error(MD_ERROR_TEST_07);
         return -1;
+    }
     _delay_ms(SCL_FREE);
 
     // receive results //
-    if(i2c_start())
+    if(i2c_start()) {
+        raise_error(MD_ERROR_TEST_08);
         return -1;
-    if(i2c_send(SHT30_ADDR_R, ADR_R_ACK))
+    }
+    if(i2c_send(SHT30_ADDR_R, ADR_R_ACK)) {
+        raise_error(MD_ERROR_TEST_09);
         return -1;
+    }
     uint8_t temp1;
     uint8_t temp0;
     uint8_t temp_crc;
     uint8_t hum1;
     uint8_t hum0;
     uint8_t hum_crc;
-    if(i2c_receive(&temp1))
+    if(i2c_receive(&temp1)) {
+        raise_error(MD_ERROR_TEST_0A);
         return -1;
-    if(i2c_receive(&temp0))
+    }
+    if(i2c_receive(&temp0)) {
+        raise_error(MD_ERROR_TEST_0B);
         return -1;
-    if(i2c_receive(&temp_crc))
+    }
+    if(i2c_receive(&temp_crc)) {
+        raise_error(MD_ERROR_TEST_0C);
         return -1;
-    if(i2c_receive(&hum1))
+    }
+    if(i2c_receive(&hum1)) {
+        raise_error(MD_ERROR_TEST_0D);
         return -1;
-    if(i2c_receive(&hum0))
+    }
+    if(i2c_receive(&hum0)) {
+        raise_error(MD_ERROR_TEST_0E);
         return -1;
-    if(i2c_receive(&hum_crc))
+    }
+    if(i2c_receive(&hum_crc)) {
+        raise_error(MD_ERROR_TEST_10);
         return -1;
-    if(i2c_stop())
+    }
+    if(i2c_stop()) {
+        raise_error(MD_ERROR_TEST_11);
         return -1;
+    }
 
     // TODO: validate CRCs
     flash_create_sensor_data_block(sensor_data, (uint16_t)temp1 << 8 | (uint16_t)temp0, (uint16_t)hum1 << 8 | (uint16_t)hum0, temp_crc, hum_crc);
+    return 0;
+}
+int i2c_measure_temp_hum(FlashSensorData* sensor_data)
+{
+    if(i2c_attempt_read_sensor(sensor_data)) {
+        // send stop condition after all failures
+        if(i2c_stop()) {
+            raise_error(MD_ERROR_TEST_12);
+            return -1;
+        }
+        return -1;
+    }
     return 0;
 }

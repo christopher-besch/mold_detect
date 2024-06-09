@@ -2,6 +2,8 @@
 
 #include "flash_blocks.h"
 
+void i2c_init();
+
 // Ask the sensor about the current atmosphere condition.
 // Store those values in sensor_data.
 // return 0 on success
