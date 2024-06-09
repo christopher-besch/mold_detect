@@ -49,9 +49,9 @@ COMPILE    = avr-gcc -Wall -g -Og \
 			 -mmcu=$(DEVICE) \
 			 $(FLOAT_PRINTF_LINK_SETTINGS)
 
-.PHONY: all install flash fuse clean
+.PHONY: all install flash fuse clean check
 
-all: main.hex
+all: main.hex check
 
 install: fuse flash
 
@@ -74,3 +74,7 @@ main.hex: main.elf
 
 clean:
 	rm -f *.o main.hex main.elf
+
+check: %.o: ../%.c
+	cppcheck --check-level=exhaustive ..
+
