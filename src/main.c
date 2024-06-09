@@ -37,11 +37,11 @@ void set_clock_speed()
     uint8_t clkps_3_0 = 0b0111;
 #endif
 #if CLOCK_DIV == 256
-    uint8_t clkps_3_0 = 0b0000;
+    uint8_t clkps_3_0 = 0b1000;
 #endif
     // enable updating the clock speed
     CLKPR = 1 << CLKPCE;
-    // divide clock by 8
+    // divide clock by whatever the preprocessor calculated
     CLKPR = clkps_3_0 << CLKPS0;
 }
 

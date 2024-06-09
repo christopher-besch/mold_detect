@@ -27,7 +27,7 @@
 void i2c_init()
 {
     TWBR = I2C_CLOCK_DIV;
-    // the prescalar could be used to achieve even lower i2c clock speeds;
+    // The prescalar could be used to achieve even lower i2c clock speeds.
     TWSR = 0;
 }
 
