@@ -50,7 +50,7 @@ int i2c_start()
 
     await_transmission_conclusion();
     if(!check_status(START)) {
-        raise_error(MD_ERROR_TEST_00);
+        raise_error(MD_ERROR_I2C_START_CHECK_STATUS_FAILED);
         return -1;
     }
     return 0;
@@ -74,7 +74,7 @@ int i2c_send(uint8_t data, uint8_t expected_status)
     TWCR = (1 << TWINT) | (1 << TWEN);
     await_transmission_conclusion();
     if(!check_status(expected_status)) {
-        raise_error(MD_ERROR_TEST_01);
+        raise_error(MD_ERROR_I2C_SEND_CHECK_STATUS_FAILED);
         return -1;
     }
     return 0;
@@ -89,7 +89,7 @@ int i2c_receive(uint8_t* data)
     TWCR = (1 << TWINT) | (1 << TWEA) | (1 << TWEN);
     await_transmission_conclusion();
     if(!check_status(DATA_REC_ACK)) {
-        raise_error(MD_ERROR_TEST_02);
+        raise_error(MD_ERROR_I2C_RECEIVE_CHECK_STATUS_FAILED);
         return -1;
     }
     *data = TWDR;
@@ -100,37 +100,37 @@ int i2c_attempt_read_sensor(FlashSensorData* sensor_data)
 {
     // send measurement request //
     if(i2c_start()) {
-        raise_error(MD_ERROR_TEST_03);
+        raise_error(MD_ERROR_I2C_ATTEMPT_READ_SENSOR_START1_FAILED);
         return -1;
     }
     // send address in controller write mode
     if(i2c_send(SHT30_ADDR_W, ADR_W_ACK)) {
-        raise_error(MD_ERROR_TEST_04);
+        raise_error(MD_ERROR_I2C_ATTEMPT_READ_SENSOR_SEND_ADDR_FAILED);
         return -1;
     }
     // send command MSB
     if(i2c_send(HIGH_REP_CLK_STRETCH1, DATA_TRANS_ACK)) {
-        raise_error(MD_ERROR_TEST_05);
+        raise_error(MD_ERROR_I2C_ATTEMPT_READ_SENSOR_SEND_MSB_CMD_FAILED);
         return -1;
     }
     // send command LSB
     if(i2c_send(HIGH_REP_CLK_STRETCH0, DATA_TRANS_ACK)) {
-        raise_error(MD_ERROR_TEST_06);
+        raise_error(MD_ERROR_I2C_ATTEMPT_READ_SENSOR_SEND_LSB_CMD_FAILED);
         return -1;
     }
     if(i2c_stop()) {
-        raise_error(MD_ERROR_TEST_07);
+        raise_error(MD_ERROR_I2C_ATTEMPT_READ_SENSOR_SEND_STOP_FAILED);
         return -1;
     }
     _delay_ms(SCL_FREE);
 
     // receive results //
     if(i2c_start()) {
-        raise_error(MD_ERROR_TEST_08);
+        raise_error(MD_ERROR_I2C_ATTEMPT_READ_SENSOR_START1_FAILED);
         return -1;
     }
     if(i2c_send(SHT30_ADDR_R, ADR_R_ACK)) {
-        raise_error(MD_ERROR_TEST_09);
+        raise_error(MD_ERROR_I2C_ATTEMPT_READ_SENSOR_SEND_REC_ADDR_FAILED);
         return -1;
     }
     uint8_t temp1;
@@ -140,31 +140,31 @@ int i2c_attempt_read_sensor(FlashSensorData* sensor_data)
     uint8_t hum0;
     uint8_t hum_crc;
     if(i2c_receive(&temp1)) {
-        raise_error(MD_ERROR_TEST_0A);
+        raise_error(MD_ERROR_I2C_ATTEMPT_READ_SENSOR_SEND_REC_TEMP1);
         return -1;
     }
     if(i2c_receive(&temp0)) {
-        raise_error(MD_ERROR_TEST_0B);
+        raise_error(MD_ERROR_I2C_ATTEMPT_READ_SENSOR_SEND_REC_TEMP0);
         return -1;
     }
     if(i2c_receive(&temp_crc)) {
-        raise_error(MD_ERROR_TEST_0C);
+        raise_error(MD_ERROR_I2C_ATTEMPT_READ_SENSOR_SEND_REC_TEMP_CRC);
         return -1;
     }
     if(i2c_receive(&hum1)) {
-        raise_error(MD_ERROR_TEST_0D);
+        raise_error(MD_ERROR_I2C_ATTEMPT_READ_SENSOR_SEND_REC_HUM1);
         return -1;
     }
     if(i2c_receive(&hum0)) {
-        raise_error(MD_ERROR_TEST_0E);
+        raise_error(MD_ERROR_I2C_ATTEMPT_READ_SENSOR_SEND_REC_HUM0);
         return -1;
     }
     if(i2c_receive(&hum_crc)) {
-        raise_error(MD_ERROR_TEST_10);
+        raise_error(MD_ERROR_I2C_ATTEMPT_READ_SENSOR_SEND_REC_HUM_CRC);
         return -1;
     }
     if(i2c_stop()) {
-        raise_error(MD_ERROR_TEST_11);
+        raise_error(MD_ERROR_I2C_ATTEMPT_READ_SENSOR_SEND_REC_SEND_STOP);
         return -1;
     }
 
@@ -177,7 +177,7 @@ int i2c_measure_temp_hum(FlashSensorData* sensor_data)
     if(i2c_attempt_read_sensor(sensor_data)) {
         // send stop condition after all failures
         if(i2c_stop()) {
-            raise_error(MD_ERROR_TEST_12);
+            raise_error(MD_ERROR_I2C_MEASURE_TEMP_HUM_ERROR_STOP_FAILED);
             return -1;
         }
         return -1;

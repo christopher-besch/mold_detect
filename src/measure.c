@@ -8,25 +8,13 @@
 #include <util/delay.h>
 
 static uint8_t atmosphere_bad = 0;
-#define MEASURE_ATTEMPTS 1
 
 void measure_perform_measurement()
 {
-    // TODO: remove debug led here
-    set_atmosphere_led(1);
-
     static FlashSensorData sensor_data;
-    // perform multiple attempts for a while
-    uint8_t ok = 0;
-    for(uint8_t i = 0; i < MEASURE_ATTEMPTS; ++i) {
-        if(!i2c_measure_temp_hum(&sensor_data)) {
-            ok = 1;
-            break;
-        }
-        _delay_ms(1000);
-    }
-    if(!ok) {
-        // create the block to store when the error occured and to keep the time up to date
+    if(!i2c_measure_temp_hum(&sensor_data)) {
+        // Don't reset to create and then store the block
+        // This stores when the error occured and keeps the time up to date.
         raise_error(MOLD_ERROR_PERFORM_MEASUREMENT_FAILED);
         flash_create_sensor_data_block(&sensor_data, 0, 0, 0, 0);
     }

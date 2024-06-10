@@ -17,7 +17,6 @@
 // 0x60 would also work
 #define FLASH_CHIP_ERASE 0xc7
 #define FLASH_POWER_DOWN 0xb9
-#define FLASH_POWER_DOWN 0xb9
 #define FLASH_POWER_UP   0xab
 
 #define FLASH_POWER_DOWN_DELAY_US 3
