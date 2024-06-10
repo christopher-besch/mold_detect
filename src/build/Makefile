@@ -47,6 +47,7 @@ COMPILE    = avr-gcc -Wall -g -Og \
 			 -DHEARTBEAT_SECS=$(HEARTBEAT_SECS) \
 			 -DCRYSTAL_CLOCK=$(CRYSTAL_CLOCK) \
 			 -DCLOCK_DIV=$$(( $(CRYSTAL_CLOCK) / $(CLOCK) )) \
+			 -DI2C_CLOCK=$(I2C_CLOCK) \
 			 -DI2C_CLOCK_DIV=$$(( ( $(CLOCK) / $(I2C_CLOCK) - 16 ) / 2 )) \
 			 -mmcu=$(DEVICE) \
 			 $(FLOAT_PRINTF_LINK_SETTINGS)

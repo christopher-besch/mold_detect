@@ -238,4 +238,15 @@ void print_version()
     uart_println(COMMIT_HASH);
     uart_println("Developed by Christopher Besch\r\nat the Chair for Embedded Systems at the Karlsruher Institut für Technologie");
     uart_print_kit_logo();
+
+#define STRINGIFY(x) #x
+#define TOSTRING(x)  STRINGIFY(x)
+    uart_print("CRYSTAL_CLOCK: ");
+    uart_println(TOSTRING(CRYSTAL_CLOCK));
+    uart_print("CLOCK: ");
+    uart_println(TOSTRING(F_CPU));
+    uart_print("BAUD: ");
+    uart_println(TOSTRING(BAUD));
+    uart_print("I2C_CLOCK: ");
+    uart_println(TOSTRING(I2C_CLOCK));
 }
