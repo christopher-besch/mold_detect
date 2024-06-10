@@ -12,7 +12,7 @@ static uint8_t atmosphere_bad = 0;
 void measure_perform_measurement()
 {
     static FlashSensorData sensor_data;
-    if(!i2c_measure_temp_hum(&sensor_data)) {
+    if(i2c_measure_temp_hum(&sensor_data)) {
         // Don't reset to create and then store the block
         // This stores when the error occured and keeps the time up to date.
         raise_error(MOLD_ERROR_PERFORM_MEASUREMENT_FAILED);
